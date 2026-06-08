@@ -1,107 +1,140 @@
-# Intern Assignment API + Task Dashboard
+<div align="center">
 
-A complete full-stack task management platform built with a Node.js/Express/MongoDB backend and a React/Vite/Tailwind frontend. It includes JWT authentication, role-based access control, task CRUD, Swagger docs, and a polished responsive UI.
+<br/>
+
+# TaskFlow
+
+![Node.js](https://img.shields.io/badge/Node.js-0f172a?style=for-the-badge&logo=nodedotjs&logoColor=6DB33F)&nbsp;
+![Express](https://img.shields.io/badge/Express-0f172a?style=for-the-badge&logo=express&logoColor=white)&nbsp;
+![MongoDB](https://img.shields.io/badge/MongoDB-0f172a?style=for-the-badge&logo=mongodb&logoColor=47A248)&nbsp;
+![React](https://img.shields.io/badge/React-0f172a?style=for-the-badge&logo=react&logoColor=61DAFB)&nbsp;
+![Vite](https://img.shields.io/badge/Vite-0f172a?style=for-the-badge&logo=vite&logoColor=646CFF)&nbsp;
+![TailwindCSS](https://img.shields.io/badge/Tailwind-0f172a?style=for-the-badge&logo=tailwindcss&logoColor=38BDF8)&nbsp;
+![JWT](https://img.shields.io/badge/JWT-0f172a?style=for-the-badge&logo=jsonwebtokens&logoColor=FB015B)&nbsp;
+![Swagger](https://img.shields.io/badge/Swagger-0f172a?style=for-the-badge&logo=swagger&logoColor=85EA2D)
+
+<br/>
+
+A complete full-stack task management platform with JWT authentication, role-based access control, task CRUD operations, Swagger docs, and a polished responsive UI.
+
+<br/>
+
+</div>
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Backend | Node.js, Express.js |
-| Frontend | React, Vite, Tailwind CSS |
-| Database | MongoDB, Mongoose |
-| Auth | JWT, bcryptjs |
-| Docs | Swagger UI, swagger-jsdoc |
+| ![Node.js](https://img.shields.io/badge/Backend-0f172a?style=flat-square) | Node.js, Express.js |
+| ![Frontend](https://img.shields.io/badge/Frontend-0f172a?style=flat-square) | React, Vite, Tailwind CSS |
+| ![Database](https://img.shields.io/badge/Database-0f172a?style=flat-square) | MongoDB, Mongoose |
+| ![Auth](https://img.shields.io/badge/Auth-0f172a?style=flat-square) | JWT, bcryptjs |
+| ![Docs](https://img.shields.io/badge/Docs-0f172a?style=flat-square) | Swagger UI, swagger-jsdoc |
+
+---
 
 ## Prerequisites
 
-- Node.js 18+ 
-- MongoDB
-- npm
+![Node](https://img.shields.io/badge/Node.js-18+-6DB33F?style=flat-square&logo=nodedotjs&logoColor=white)&nbsp;
+![MongoDB](https://img.shields.io/badge/MongoDB-required-47A248?style=flat-square&logo=mongodb&logoColor=white)&nbsp;
+![npm](https://img.shields.io/badge/npm-required-CB3837?style=flat-square&logo=npm&logoColor=white)
 
-## Setup Instructions
+---
 
-### 1. Backend Setup
-1. Open a terminal in the backend folder.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy the environment example file:
-   ```bash
-   copy .env.example .env
-   ```
-4. Update the values in `.env` if needed.
-5. Start the backend in development mode:
-   ```bash
-   npm run dev
-   ```
-6. Seed the database with demo users and tasks:
-   ```bash
-   npm run seed
-   ```
+## Setup
 
-### 2. Frontend Setup
-1. Open a second terminal in the frontend folder.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the frontend:
-   ```bash
-   npm run dev
-   ```
+### Backend
+
+```bash
+# Install dependencies
+cd backend
+npm install
+
+# Configure environment
+copy .env.example .env
+
+# Start development server
+npm run dev
+
+# Seed demo data
+npm run seed
+```
+
+### Frontend
+
+```bash
+# In a second terminal
+cd frontend
+npm install
+npm run dev
+```
+
+---
 
 ## Environment Variables
 
-| Name | Description | Example |
+| Variable | Description | Example |
 |---|---|---|
-| PORT | Port used by the Express server | 5000 |
-| MONGO_URI | MongoDB connection string | mongodb://localhost:27017/intern_db |
-| JWT_SECRET | Secret used to sign JWTs | your_super_secret_key |
-| JWT_EXPIRES_IN | JWT expiration duration | 7d |
-| NODE_ENV | Runtime environment | development |
+| `PORT` | Express server port | `5000` |
+| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/intern_db` |
+| `JWT_SECRET` | JWT signing secret | `your_super_secret_key` |
+| `JWT_EXPIRES_IN` | JWT expiration duration | `7d` |
+| `NODE_ENV` | Runtime environment | `development` |
 
-## API Endpoints
+---
 
-Base URL: `http://localhost:5000/api/v1`
+## API Reference
 
-| Method | Endpoint | Auth Required | Description |
+**Base URL:** `http://localhost:5000/api/v1`
+
+#### Auth
+
+| Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| POST | /auth/register | No | Register a new user |
-| POST | /auth/login | No | Login and receive JWT |
-| GET | /auth/me | Yes | Fetch current authenticated user |
-| GET | /tasks | Yes | Get tasks for current user, or all for admin |
-| POST | /tasks | Yes | Create a new task |
-| GET | /tasks/:id | Yes | Get one task by id |
-| PUT | /tasks/:id | Yes | Update a task by id |
-| DELETE | /tasks/:id | Yes | Delete a task by id |
-| GET | /tasks/admin/all | Yes, Admin Only | Get all tasks with owner info |
+| ![POST](https://img.shields.io/badge/POST-22c55e?style=flat-square&logoColor=white) | `/auth/register` | — | Register a new user |
+| ![POST](https://img.shields.io/badge/POST-22c55e?style=flat-square&logoColor=white) | `/auth/login` | — | Login and receive JWT |
+| ![GET](https://img.shields.io/badge/GET-3b82f6?style=flat-square&logoColor=white) | `/auth/me` | Required | Fetch authenticated user |
+
+#### Tasks
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| ![GET](https://img.shields.io/badge/GET-3b82f6?style=flat-square&logoColor=white) | `/tasks` | Required | Get tasks (all if admin) |
+| ![POST](https://img.shields.io/badge/POST-22c55e?style=flat-square&logoColor=white) | `/tasks` | Required | Create a new task |
+| ![GET](https://img.shields.io/badge/GET-3b82f6?style=flat-square&logoColor=white) | `/tasks/:id` | Required | Get one task by ID |
+| ![PUT](https://img.shields.io/badge/PUT-f59e0b?style=flat-square&logoColor=white) | `/tasks/:id` | Required | Update a task |
+| ![DELETE](https://img.shields.io/badge/DELETE-ef4444?style=flat-square&logoColor=white) | `/tasks/:id` | Required | Delete a task |
+| ![GET](https://img.shields.io/badge/GET-3b82f6?style=flat-square&logoColor=white) | `/tasks/admin/all` | Admin only | All tasks with owner info |
+
+---
 
 ## Default Credentials
 
-Created by the seed script:
+> Run `npm run seed` after connecting MongoDB to populate these accounts and five sample tasks.
 
-- Admin: `admin@admin.com` / `admin123`
-- Test user: `test@test.com` / `test123`
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@admin.com` | `admin123` |
+| User | `test@test.com` | `test123` |
 
-Run the seed script after connecting MongoDB to populate these accounts and five sample tasks.
+---
 
-## Swagger Docs
+## Docs & Testing
 
-Open the API docs at:
+**Swagger UI:** `http://localhost:5000/api/docs`
 
-`http://localhost:5000/api/docs`
+**Postman:** Import [`postman_collection.json`](postman_collection.json) — includes environment variables, folder organization, and sample requests for auth, tasks, and admin endpoints.
 
-## Postman Collection
-
-A ready-to-import collection is included at [postman_collection.json](postman_collection.json). It includes environment variables, folder organization, and sample requests for auth, tasks, and admin endpoints.
+---
 
 ## Scalability Notes
 
-This application is structured to scale beyond a single development deployment. The backend can be placed behind an Nginx reverse proxy or cloud load balancer so multiple Node.js instances can run horizontally and share traffic. That approach helps with availability, throughput, and safer zero-downtime deployments.
+The backend can be placed behind an Nginx reverse proxy or cloud load balancer for horizontal scaling, zero-downtime deployments, and improved throughput.
 
-Redis is a natural next step for caching frequently accessed data, short-lived auth metadata, and shared rate-limit or session-related state. That reduces repeated reads against MongoDB and makes the system more responsive under load.
+**Redis** is a natural next step for caching frequently accessed data, auth metadata, and rate-limit state — reducing repeated reads against MongoDB.
 
-MongoDB Atlas with replica sets gives the database layer high availability, automated backups, and easier cloud operations. It also simplifies moving from a local developer database to a production-ready managed cluster without changing the application data model.
+**MongoDB Atlas** with replica sets provides high availability, automated backups, and a seamless path from local development to a production-managed cluster.
 
-For deployment consistency, Docker and Docker Compose can package the backend, frontend, and supporting services into reproducible containers. As the product grows, the monolith can be split into dedicated services such as an Auth Service, Task Service, and Notification Service. Rate limiting and input validation are already in place here as the baseline security and abuse-control layer for that scale-out path.
+**Docker & Docker Compose** can package all services into reproducible containers. As the product grows, the monolith can be split into dedicated Auth, Task, and Notification services. Rate limiting and input validation are already in place as the baseline security layer for that path.
