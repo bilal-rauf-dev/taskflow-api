@@ -36,7 +36,6 @@ function Landing() {
               </div>
               <div>
                 <p className="text-lg font-bold tracking-wide">TaskFlow</p>
-                <p className="text-xs text-white/70">Primetrade.ai Internship Assignment</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -121,7 +120,7 @@ function Landing() {
           </section>
 
           <footer className="border-t border-white/10 pt-6 text-center text-sm text-white/70">
-            Built for Primetrade.ai Internship Assignment
+            Built by Bilal Rauf
           </footer>
         </div>
       </section>

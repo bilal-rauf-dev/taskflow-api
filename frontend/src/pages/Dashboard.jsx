@@ -8,14 +8,18 @@ import {
   CheckCircleIcon,
   ClockIcon,
   ExclamationTriangleIcon,
-  Bars3BottomLeftIcon
+  Bars3BottomLeftIcon,
+  Squares2X2Icon,
+  ListBulletIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import { useSocket } from '../context/SocketContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
+import { fuzzySearchTasks } from '../utils/search';
 
 const filters = ['all', 'pending', 'in-progress', 'completed'];
 
@@ -27,11 +31,17 @@ function Dashboard() {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [viewMode, setViewMode] = useState('board');
+  const [smartSuggest, setSmartSuggest] = useState(false);
+  const [grabbedTaskId, setGrabbedTaskId] = useState(null);
+  const [ariaAnnouncement, setAriaAnnouncement] = useState('');
+  const socket = useSocket();
 
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/tasks');
+      const url = smartSuggest ? '/tasks/smart/suggest' : '/tasks';
+      const response = await api.get(url);
       setTasks(response.data.data.tasks || []);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to fetch tasks');
@@ -42,7 +52,30 @@ function Dashboard() {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [smartSuggest]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('task_created', (newTask) => {
+      const isOwner = newTask.owner === user?.id || newTask.owner === user?._id || newTask.owner?._id === user?._id;
+      if (isAdmin || isOwner) {
+        setTasks((prev) => {
+          if (prev.some((t) => t._id === newTask._id)) return prev;
+          return [newTask, ...prev];
+        });
+      }
+    });
+
+    socket.on('task_updated', (updatedTask) => {
+      setTasks((prev) => prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)));
+    });
+
+    return () => {
+      socket.off('task_created');
+      socket.off('task_updated');
+    };
+  }, [socket, user, isAdmin]);
 
   const stats = useMemo(() => {
     const total = tasks.length;
@@ -65,15 +98,8 @@ function Dashboard() {
 
   const filteredTasks = useMemo(() => {
     const byStatus = filter === 'all' ? tasks : tasks.filter((task) => task.status === filter);
-    const query = search.trim().toLowerCase();
-
-    if (!query) return byStatus;
-
-    return byStatus.filter((task) => {
-      const titleMatch = task.title?.toLowerCase().includes(query);
-      const descriptionMatch = task.description?.toLowerCase().includes(query);
-      return titleMatch || descriptionMatch;
-    });
+    const query = search.trim();
+    return fuzzySearchTasks(byStatus, query);
   }, [tasks, filter, search]);
 
   const openCreate = () => {
@@ -109,6 +135,77 @@ function Dashboard() {
       toast.success('Task deleted');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Unable to delete task');
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (e, targetStatus) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (!taskId) return;
+
+    const previousTasks = [...tasks];
+
+    try {
+      setTasks((prev) =>
+        prev.map((t) => (t._id === taskId ? { ...t, status: targetStatus } : t))
+      );
+      await api.put(`/tasks/${taskId}`, { status: targetStatus });
+      toast.success(`Task moved to ${targetStatus.replace('-', ' ')}`);
+    } catch (error) {
+      toast.error('Failed to move task');
+      setTasks(previousTasks);
+    }
+  };
+
+  const handleKeyDown = async (e, task) => {
+    if (viewMode !== 'board') return;
+
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      if (grabbedTaskId === task._id) {
+        setGrabbedTaskId(null);
+        setAriaAnnouncement(`Task "${task.title}" dropped in column "${task.status.replace('-', ' ')}".`);
+        toast.success(`Task dropped in ${task.status.replace('-', ' ')}`);
+      } else {
+        setGrabbedTaskId(task._id);
+        setAriaAnnouncement(`Picked up task "${task.title}". Current column: "${task.status.replace('-', ' ')}". Use left and right arrow keys to move columns, Enter or Space to drop, Escape to cancel.`);
+      }
+    } else if (e.key === 'Escape' && grabbedTaskId === task._id) {
+      setGrabbedTaskId(null);
+      setAriaAnnouncement('Task released. Drag and drop cancelled.');
+    } else if (grabbedTaskId === task._id) {
+      const statusFlow = ['pending', 'in-progress', 'completed'];
+      const currentIndex = statusFlow.indexOf(task.status);
+      let nextIndex = currentIndex;
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextIndex = Math.min(currentIndex + 1, statusFlow.length - 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        nextIndex = Math.max(currentIndex - 1, 0);
+      }
+
+      if (nextIndex !== currentIndex) {
+        const nextStatus = statusFlow[nextIndex];
+        const previousTasks = [...tasks];
+
+        setTasks((prev) =>
+          prev.map((t) => (t._id === task._id ? { ...t, status: nextStatus } : t))
+        );
+
+        try {
+          await api.put(`/tasks/${task._id}`, { status: nextStatus });
+          setAriaAnnouncement(`Moved task "${task.title}" to column "${nextStatus.replace('-', ' ')}". Press Space or Enter to confirm and drop.`);
+        } catch (err) {
+          setTasks(previousTasks);
+          setAriaAnnouncement(`Failed to move task. Reverted to column "${statusFlow[currentIndex].replace('-', ' ')}".`);
+        }
+      }
     }
   };
 
@@ -151,9 +248,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard-shell min-h-screen">
-      <Navbar />
-
-      <main className="mx-auto max-w-7xl px-4 pb-6 pt-24 sm:px-6 lg:px-8 lg:pt-28">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <section className="overflow-hidden rounded-[0.5rem] bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 p-6 text-white shadow-2xl shadow-slate-950/15 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -182,46 +277,89 @@ function Dashboard() {
         </section>
 
         <section className="mt-6 rounded-[0.5rem] border border-white/70 bg-white/90 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-6">
-          <div className="relative">
-            <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search tasks..."
-              className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-11 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-500 transition hover:bg-gray-200"
-                aria-label="Clear search"
-              >
-                <XMarkIcon className="h-4 w-4" />
-              </button>
-            )}
+          <div className="flex flex-col gap-4 sm:flex-row items-center">
+            <div className="relative flex-1 w-full">
+              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search tasks..."
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-11 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-500 transition hover:bg-gray-200"
+                  aria-label="Clear search"
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setSmartSuggest(prev => !prev)}
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-2xl border px-5 py-3 text-sm font-semibold shadow-sm transition whitespace-nowrap ${
+                smartSuggest
+                  ? 'bg-indigo-50 border-indigo-200 text-indigo-700 font-bold ring-2 ring-indigo-500/10'
+                  : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <span>✨ Smart Suggest</span>
+            </button>
           </div>
         </section>
 
-        <section className="mt-4 flex flex-wrap gap-2">
-          {filters.map((item) => (
+        <section className="mt-4 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {filters.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setFilter(item)}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  filter === item
+                    ? 'bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 text-white shadow-lg shadow-slate-950/20'
+                    : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50'
+                }`}
+              >
+                <span>{item === 'all' ? 'All' : item.replace('-', ' ')}</span>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${filter === item ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                  {filterCounts[item]}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-gray-200">
             <button
-              key={item}
               type="button"
-              onClick={() => setFilter(item)}
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                filter === item
-                  ? 'bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 text-white shadow-lg shadow-slate-950/20'
-                  : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50'
+              onClick={() => setViewMode('board')}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                viewMode === 'board'
+                  ? 'bg-slate-950 text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              <span>{item === 'all' ? 'All' : item.replace('-', ' ')}</span>
-              <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${filter === item ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
-                {filterCounts[item]}
-              </span>
+              <Squares2X2Icon className="h-4 w-4" />
+              Board
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                viewMode === 'list'
+                  ? 'bg-slate-950 text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <ListBulletIcon className="h-4 w-4" />
+              List
+            </button>
+          </div>
         </section>
 
         <section className="mt-6">
@@ -251,11 +389,77 @@ function Dashboard() {
                   : 'Build momentum by adding a task and letting the dashboard do the rest.'}
               </p>
             </div>
+          ) : viewMode === 'board' ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {Object.entries({
+                pending: { title: 'To Do', border: 'border-t-slate-400', bg: 'bg-slate-50/50' },
+                'in-progress': { title: 'In Progress', border: 'border-t-amber-400', bg: 'bg-amber-50/10' },
+                completed: { title: 'Completed', border: 'border-t-emerald-400', bg: 'bg-emerald-50/10' }
+              }).map(([statusKey, col]) => {
+                const columnTasks = filteredTasks.filter((task) => task.status === statusKey);
+                return (
+                  <div
+                    key={statusKey}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, statusKey)}
+                    className={`flex flex-col rounded-2xl border border-gray-250 p-4 border-t-4 ${col.border} ${col.bg} min-h-[450px]`}
+                  >
+                    <h3 className="mb-4 flex items-center justify-between font-bold text-gray-700">
+                      <span>{col.title}</span>
+                      <span className="rounded-full bg-slate-200/70 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+                        {columnTasks.length}
+                      </span>
+                    </h3>
+
+                    <div className="flex-1 space-y-4">
+                      <AnimatePresence>
+                        {columnTasks.map((task) => (
+                          <motion.div
+                            key={task._id}
+                            layout
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            whileHover={{ y: -1 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <TaskCard
+                              task={task}
+                              onEdit={openEdit}
+                              onDelete={handleDeleteTask}
+                              draggable={grabbedTaskId === null}
+                              onDragStart={(e) => e.dataTransfer.setData('text/plain', task._id)}
+                              onKeyDown={(e) => handleKeyDown(e, task)}
+                            />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                      {columnTasks.length === 0 && (
+                        <div className="flex h-24 items-center justify-center rounded-2xl border border-dashed border-gray-200 text-xs text-gray-400">
+                          Drop tasks here
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredTasks.map((task) => (
-                <TaskCard key={task._id} task={task} onEdit={openEdit} onDelete={handleDeleteTask} />
-              ))}
+              <AnimatePresence>
+                {filteredTasks.map((task) => (
+                  <motion.div
+                    key={task._id}
+                    layout
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <TaskCard task={task} onEdit={openEdit} onDelete={handleDeleteTask} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </section>
@@ -276,6 +480,10 @@ function Dashboard() {
         onSubmit={handleSubmitTask}
         initialTask={editingTask}
       />
+
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {ariaAnnouncement}
+      </div>
     </div>
   );
 }

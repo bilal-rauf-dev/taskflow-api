@@ -26,14 +26,20 @@ const statusStyles = {
   completed: 'bg-green-100 text-green-700'
 };
 
-function TaskCard({ task, onEdit, onDelete }) {
+function TaskCard({ task, onEdit, onDelete, draggable, onDragStart, onKeyDown }) {
   const dueDate = task.dueDate ? new Date(task.dueDate) : null;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const isOverdue = dueDate ? dueDate.getTime() <= today.getTime() : false;
 
   return (
-    <article className={`animate-rise w-full rounded-2xl border border-gray-200 border-l-4 bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-xl ${priorityBorders[task.priority]}`}>
+    <article
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      draggable={draggable}
+      onDragStart={onDragStart}
+      className={`animate-rise w-full rounded-2xl border border-gray-200 border-l-4 bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none ${priorityBorders[task.priority]} ${draggable ? 'cursor-grab active:cursor-grabbing' : ''}`}
+    >
       <div className="mb-2 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="line-clamp-1 text-lg font-semibold text-gray-900">{task.title}</h3>

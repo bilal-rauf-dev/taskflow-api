@@ -11,15 +11,18 @@ html {
 }
 
 body {
-  @apply bg-slate-50 text-gray-900 antialiased;
+  background-color: #FCFBF9;
+  color: #292524;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(31, 41, 55, 0.06), transparent 24%),
-    linear-gradient(120deg, #f8fafc, #eef2f7, #f1f5f9, #f8fafc);
+    radial-gradient(circle at top left, rgba(217, 119, 6, 0.04), transparent 28%),
+    radial-gradient(circle at top right, rgba(194, 65, 12, 0.03), transparent 24%),
+    linear-gradient(120deg, #FCFBF9, #F7F5F0, #FCFBF9);
   background-size: 200% 200%;
   animation: bg-shift 18s ease-in-out infinite;
 }
@@ -120,15 +123,15 @@ body::before {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(226, 232, 240, 0.75);
+  background: rgba(247, 245, 240, 0.75);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #0f172a, #1f2937);
+  background: linear-gradient(180deg, #57534e, #292524);
   border-radius: 999px;
-  border: 2px solid rgba(248, 250, 252, 0.9);
+  border: 2px solid #FCFBF9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #111827, #334155);
+  background: linear-gradient(180deg, #292524, #1c1917);
 }

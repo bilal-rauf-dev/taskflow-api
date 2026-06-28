@@ -4,7 +4,6 @@ import { TrashIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
-import Navbar from '../components/Navbar';
 
 function AdminPanel() {
   const [tasks, setTasks] = useState([]);
@@ -69,9 +68,7 @@ function AdminPanel() {
 
   return (
     <div className="dashboard-shell min-h-screen">
-      <Navbar />
-
-      <main className="mx-auto max-w-7xl px-4 pb-6 pt-24 sm:px-6 lg:px-8 lg:pt-28">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <section className="overflow-hidden rounded-[0.5rem] bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 p-6 text-white shadow-2xl shadow-slate-950/15 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Admin workspace</p>
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Admin Panel</h1>

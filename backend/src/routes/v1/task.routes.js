@@ -7,8 +7,15 @@ const {
   getTaskById,
   updateTask,
   deleteTask,
-  getAllTasksForAdmin
+  getAllTasksForAdmin,
+  getTaskActivity,
+  getSmartSortedTasks,
+  logTimeSpent
 } = require('../../controllers/task.controller');
+const {
+  addComment,
+  getComments
+} = require('../../controllers/comment.controller');
 const {
   createTaskValidation,
   updateTaskValidation,
@@ -131,6 +138,7 @@ router.get('/admin/all', authorizeRoles('admin'), getAllTasksForAdmin);
  *       500:
  *         description: Server error
  */
+router.get('/smart/suggest', getSmartSortedTasks);
 router.get('/:id', taskIdValidation, getTaskById);
 
 /**
@@ -207,5 +215,10 @@ router.put('/:id', updateTaskValidation, updateTask);
  *         description: Server error
  */
 router.delete('/:id', taskIdValidation, deleteTask);
+
+router.get('/:id/comments', taskIdValidation, getComments);
+router.post('/:id/comments', taskIdValidation, addComment);
+router.get('/:id/activity', taskIdValidation, getTaskActivity);
+router.post('/:id/time-log', taskIdValidation, logTimeSpent);
 
 module.exports = router;

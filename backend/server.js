@@ -11,6 +11,8 @@ const swaggerUi = require('swagger-ui-express');
 const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/v1/auth.routes');
 const taskRoutes = require('./src/routes/v1/task.routes');
+const notificationRoutes = require('./src/routes/v1/notification.routes');
+const adminRoutes = require('./src/routes/v1/admin.routes');
 const swaggerSpec = require('./src/swagger/swagger');
 
 dotenv.config();
@@ -49,6 +51,8 @@ app.get('/health', (req, res) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tasks', taskRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/admin', adminRoutes);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res) => {
@@ -73,8 +77,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+const http = require('http');
+const { initSocket } = require('./src/config/socket');
+const startDeadlineScan = require('./src/services/deadlineDaemon');
+
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+initSocket(server);
+startDeadlineScan();
+
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

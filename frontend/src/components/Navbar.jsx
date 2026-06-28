@@ -73,16 +73,28 @@ function Navbar({ onToggleMobileMenu }) {
             Dashboard
           </NavLink>
           {isAdmin && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                `rounded-xl px-3 py-2 text-sm font-semibold transition ${
-                  isActive ? 'bg-slate-950/10 text-slate-700' : 'text-gray-600 hover:bg-white/70'
-                }`
-              }
-            >
-              Admin
-            </NavLink>
+            <>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                    isActive ? 'bg-slate-950/10 text-slate-700' : 'text-gray-600 hover:bg-white/70'
+                  }`
+                }
+              >
+                Admin
+              </NavLink>
+              <NavLink
+                to="/admin/productivity"
+                className={({ isActive }) =>
+                  `rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                    isActive ? 'bg-slate-950/10 text-slate-700' : 'text-gray-600 hover:bg-white/70'
+                  }`
+                }
+              >
+                Velocity
+              </NavLink>
+            </>
           )}
         </div>
 
@@ -126,19 +138,34 @@ function Navbar({ onToggleMobileMenu }) {
               </Menu.Item>
 
               {isAdmin && (
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link
-                      to="/admin"
-                      className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${
-                        active ? 'bg-gray-100' : ''
-                      }`}
-                    >
-                      <ShieldCheckIcon className="h-4 w-4" />
-                      Admin Panel
-                    </Link>
-                  )}
-                </Menu.Item>
+                <>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <Link
+                        to="/admin"
+                        className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${
+                          active ? 'bg-gray-100' : ''
+                        }`}
+                      >
+                        <ShieldCheckIcon className="h-4 w-4" />
+                        Admin Panel
+                      </Link>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <Link
+                        to="/admin/productivity"
+                        className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${
+                          active ? 'bg-gray-100' : ''
+                        }`}
+                      >
+                        <BoltIcon className="h-4 w-4" />
+                        Velocity Reports
+                      </Link>
+                    )}
+                  </Menu.Item>
+                </>
               )}
 
               <Menu.Item>
@@ -180,16 +207,26 @@ function Navbar({ onToggleMobileMenu }) {
               <HomeIcon className="h-4 w-4" />
               Dashboard
             </Link>
-            {isAdmin && (
-              <Link
-                to="/admin"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
-              >
-                <ShieldCheckIcon className="h-4 w-4" />
-                Admin Panel
-              </Link>
-            )}
+             {isAdmin && (
+               <>
+                 <Link
+                   to="/admin"
+                   onClick={() => setMobileOpen(false)}
+                   className="flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                 >
+                   <ShieldCheckIcon className="h-4 w-4" />
+                   Admin Panel
+                 </Link>
+                 <Link
+                   to="/admin/productivity"
+                   onClick={() => setMobileOpen(false)}
+                   className="flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                 >
+                   <BoltIcon className="h-4 w-4" />
+                   Velocity Reports
+                 </Link>
+               </>
+             )}
             <button
               type="button"
               onClick={() => {
