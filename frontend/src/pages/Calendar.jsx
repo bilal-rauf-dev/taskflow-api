@@ -58,14 +58,14 @@ export default function TaskCalendar() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 h-[calc(100vh-40px)] flex flex-col">
       <div className="mb-6">
-        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-warm-terracotta">Time Management</span>
-        <h1 className="text-2xl font-black text-warm-ink mt-1">Calendar Workspace</h1>
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Time Management</span>
+        <h1 className="qp-heading mt-1 text-4xl text-foreground">Calendar Workspace</h1>
       </div>
 
-      <div className="flex-1 rounded-3xl border border-warm-surface bg-white p-5 shadow-warm-lg overflow-hidden flex flex-col">
+      <div className="qp-card flex flex-1 flex-col overflow-hidden p-5 shadow-sm">
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
-            <span className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+            <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
           </div>
         ) : (
           <div className="flex-1 h-full min-h-[500px]">
@@ -81,13 +81,13 @@ export default function TaskCalendar() {
               eventPropGetter={(event) => {
                 const priority = event.resource?.priority;
                 const colors = {
-                  high: 'bg-rose-500 text-white border-rose-600',
+                  high: 'bg-red-500 text-white border-red-600',
                   medium: 'bg-amber-500 text-white border-amber-600',
-                  low: 'bg-emerald-500 text-white border-emerald-600'
-                }[priority] || 'bg-slate-500 text-white border-slate-600';
+                  low: 'bg-emerald-600 text-white border-emerald-700'
+                }[priority] || 'bg-foreground text-white border-foreground';
                 
                 return {
-                  className: `${colors} font-bold text-xs rounded-lg px-2 shadow-sm border`
+                  className: `${colors} font-medium text-xs rounded-sm px-2 shadow-xs border`
                 };
               }}
             />

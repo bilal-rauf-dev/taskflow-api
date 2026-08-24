@@ -33,21 +33,21 @@ export default function Settings() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       <div>
-        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-warm-terracotta">Configuration</span>
-        <h1 className="text-2xl font-black text-warm-ink mt-1">Preferences & settings</h1>
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Configuration</span>
+        <h1 className="qp-heading mt-1 text-4xl text-foreground">Preferences & settings</h1>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left column - profile overview */}
-        <div className="md:col-span-1 rounded-3xl border border-warm-surface bg-white p-6 shadow-warm-md flex flex-col items-center text-center space-y-4">
-          <div className="grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-slate-950 via-gray-850 to-slate-900 text-2xl font-bold text-white shadow-md">
+        <div className="qp-card md:col-span-1 flex flex-col items-center space-y-4 p-6 text-center shadow-sm">
+          <div className="grid h-20 w-20 place-items-center rounded-full bg-accent font-heading text-3xl text-white shadow-xs">
             {user?.name ? user.name[0].toUpperCase() : 'U'}
           </div>
           <div>
-            <h2 className="font-bold text-warm-ink text-lg">{user?.name}</h2>
-            <p className="text-xs text-warm-muted capitalize">{user?.role} Workspace</p>
+            <h2 className="font-heading text-2xl text-foreground">{user?.name}</h2>
+            <p className="text-xs text-foreground-muted capitalize">{user?.role} Workspace</p>
           </div>
-          <div className="w-full pt-4 border-t border-warm-surface text-left text-xs space-y-1 text-warm-muted">
+          <div className="w-full space-y-1 border-t border-border pt-4 text-left text-xs text-foreground-muted">
             <p>Joined TaskFlow recently</p>
             <p className="truncate">Email: {user?.email}</p>
           </div>
@@ -56,23 +56,23 @@ export default function Settings() {
         {/* Right column - settings forms */}
         <div className="md:col-span-2 space-y-6">
           {/* App preferences */}
-          <div className="rounded-3xl border border-warm-surface bg-white p-6 shadow-warm-md space-y-4">
-            <h3 className="font-bold text-warm-ink flex items-center gap-2 border-b border-warm-surface pb-3">
-              <PaintBrushIcon className="w-5 h-5 text-warm-terracotta" />
+          <div className="qp-card space-y-4 p-6 shadow-sm">
+            <h3 className="flex items-center gap-2 border-b border-border pb-3 font-heading text-2xl text-foreground">
+              <PaintBrushIcon className="h-5 w-5 text-accent" strokeWidth={1.5} />
               Application Preferences
             </h3>
 
-            <div className="divide-y divide-warm-surface text-sm">
+            <div className="divide-y divide-border text-sm">
               <div className="py-4 flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-warm-ink">Sound Notifications</p>
-                  <p className="text-xs text-warm-muted">Play a sound alert when Pomodoro countdown completes.</p>
+                  <p className="font-semibold text-foreground">Sound Notifications</p>
+                  <p className="text-xs text-foreground-muted">Play a sound alert when Pomodoro countdown completes.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleToggle('soundAlerts')}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    preferences.soundAlerts ? 'bg-warm-terracotta' : 'bg-gray-200'
+                    preferences.soundAlerts ? 'bg-accent' : 'bg-border-strong'
                   }`}
                 >
                   <span
@@ -85,14 +85,14 @@ export default function Settings() {
 
               <div className="py-4 flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-warm-ink">Email Reminders</p>
-                  <p className="text-xs text-warm-muted">Receive daily summary digests of upcoming task deadlines.</p>
+                  <p className="font-semibold text-foreground">Email Reminders</p>
+                  <p className="text-xs text-foreground-muted">Receive daily summary digests of upcoming task deadlines.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleToggle('emailAlerts')}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    preferences.emailAlerts ? 'bg-warm-terracotta' : 'bg-gray-200'
+                    preferences.emailAlerts ? 'bg-accent' : 'bg-border-strong'
                   }`}
                 >
                   <span
@@ -106,31 +106,31 @@ export default function Settings() {
           </div>
 
           {/* Edit Profile mock form */}
-          <div className="rounded-3xl border border-warm-surface bg-white p-6 shadow-warm-md space-y-4">
-            <h3 className="font-bold text-warm-ink flex items-center gap-2 border-b border-warm-surface pb-3">
-              <Cog6ToothIcon className="w-5 h-5 text-warm-terracotta" />
+          <div className="qp-card space-y-4 p-6 shadow-sm">
+            <h3 className="flex items-center gap-2 border-b border-border pb-3 font-heading text-2xl text-foreground">
+              <Cog6ToothIcon className="h-5 w-5 text-accent" strokeWidth={1.5} />
               Account Settings
             </h3>
             
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block space-y-1">
-                  <span className="text-xs font-bold text-warm-muted uppercase tracking-wider">Full Name</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Full Name</span>
                   <input
                     type="text"
                     defaultValue={user?.name || ''}
                     required
-                    className="w-full rounded-xl border border-gray-200 bg-warm-canvas py-2.5 px-4 text-xs font-semibold outline-none focus:border-warm-amber focus:bg-white"
+                    className="qp-input w-full px-4 py-2.5 text-xs font-medium"
                   />
                 </label>
                 <label className="block space-y-1">
-                  <span className="text-xs font-bold text-warm-muted uppercase tracking-wider">Email Address</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Email Address</span>
                   <input
                     type="email"
                     defaultValue={user?.email || ''}
                     required
                     disabled
-                    className="w-full rounded-xl border border-gray-200 bg-warm-canvas py-2.5 px-4 text-xs font-semibold outline-none disabled:opacity-50"
+                    className="qp-input w-full px-4 py-2.5 text-xs font-medium disabled:opacity-50"
                   />
                 </label>
               </div>
@@ -138,7 +138,7 @@ export default function Settings() {
               <div className="flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="rounded-xl bg-slate-950 px-6 py-2.5 text-xs font-bold text-white hover:scale-[1.02] active:scale-[0.98] transition"
+                  className="qp-button px-6 py-2.5 text-xs"
                 >
                   Save Profile
                 </button>

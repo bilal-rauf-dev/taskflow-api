@@ -61,41 +61,41 @@ function AdminPanel() {
   };
 
   const statusBadge = {
-    pending: 'bg-slate-100 text-slate-700',
-    'in-progress': 'bg-slate-100 text-slate-700',
-    completed: 'bg-green-100 text-green-700'
+    pending: 'bg-background text-foreground-muted',
+    'in-progress': 'bg-amber-50 text-warning',
+    completed: 'bg-emerald-50 text-success'
   };
 
   return (
     <div className="dashboard-shell min-h-screen">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-[0.5rem] bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 p-6 text-white shadow-2xl shadow-slate-950/15 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Admin workspace</p>
-          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Admin Panel</h1>
-          <p className="mt-2 text-sm text-white/80 sm:text-base">Manage all tasks across users.</p>
+        <section className="overflow-hidden rounded-lg border border-border bg-surface p-6 shadow-md sm:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Admin workspace</p>
+          <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Admin Panel</h1>
+          <p className="mt-2 text-sm text-foreground-muted sm:text-base">Manage all tasks across users.</p>
         </section>
 
         <section className="mt-6 grid gap-4 sm:grid-cols-3">
-          <article className="rounded-3xl border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-            <p className="text-sm font-medium text-gray-500">Total Tasks</p>
-            <p className="mt-2 text-3xl font-black text-gray-900">{tasks.length}</p>
+          <article className="qp-card p-5 shadow-xs">
+            <p className="text-sm font-medium text-foreground-muted">Total Tasks</p>
+            <p className="qp-heading mt-2 text-4xl text-foreground">{tasks.length}</p>
           </article>
-          <article className="rounded-3xl border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-            <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
-              <UsersIcon className="h-4 w-4" /> Total Users
+          <article className="qp-card p-5 shadow-xs">
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground-muted">
+              <UsersIcon className="h-4 w-4 text-accent" strokeWidth={1.5} /> Total Users
             </div>
-            <p className="mt-2 text-3xl font-black text-slate-700">{uniqueUsers}</p>
+            <p className="qp-heading mt-2 text-4xl text-foreground">{uniqueUsers}</p>
           </article>
-          <article className="rounded-3xl border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-            <p className="text-sm font-medium text-gray-500">Completed Rate</p>
-            <p className="mt-2 text-3xl font-black text-emerald-700">{completedRate}%</p>
+          <article className="qp-card p-5 shadow-xs">
+            <p className="text-sm font-medium text-foreground-muted">Completed Rate</p>
+            <p className="qp-heading mt-2 text-4xl text-success">{completedRate}%</p>
           </article>
         </section>
 
-        <section className="mt-6 overflow-hidden rounded-[0.5rem] border border-white/70 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+        <section className="qp-card mt-6 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="min-w-[1024px] w-full text-left text-sm">
-              <thead className="bg-gradient-to-r from-slate-50 to-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <thead className="bg-background text-xs font-semibold uppercase tracking-wide text-foreground-muted">
                 <tr>
                   <th className="px-5 py-4">Title</th>
                   <th className="px-5 py-4">Owner</th>
@@ -108,31 +108,31 @@ function AdminPanel() {
               <tbody>
                 {loading ? (
                   Array.from({ length: 6 }).map((_, index) => (
-                    <tr key={index} className="animate-pulse border-t border-slate-100 odd:bg-white even:bg-slate-50">
-                      <td className="px-5 py-4"><div className="h-4 w-48 rounded-full bg-slate-200" /></td>
-                      <td className="px-5 py-4"><div className="h-8 w-40 rounded-full bg-slate-200" /></td>
-                      <td className="px-5 py-4"><div className="h-6 w-24 rounded-full bg-slate-200" /></td>
-                      <td className="px-5 py-4"><div className="h-4 w-20 rounded-full bg-slate-200" /></td>
-                      <td className="px-5 py-4"><div className="h-4 w-24 rounded-full bg-slate-200" /></td>
-                      <td className="px-5 py-4 text-right"><div className="ml-auto h-9 w-9 rounded-full bg-slate-200" /></td>
+                    <tr key={index} className="animate-pulse border-t border-border bg-surface">
+                      <td className="px-5 py-4"><div className="h-4 w-48 rounded-full bg-border" /></td>
+                      <td className="px-5 py-4"><div className="h-8 w-40 rounded-full bg-border" /></td>
+                      <td className="px-5 py-4"><div className="h-6 w-24 rounded-full bg-border" /></td>
+                      <td className="px-5 py-4"><div className="h-4 w-20 rounded-full bg-border" /></td>
+                      <td className="px-5 py-4"><div className="h-4 w-24 rounded-full bg-border" /></td>
+                      <td className="px-5 py-4 text-right"><div className="ml-auto h-9 w-9 rounded-full bg-border" /></td>
                     </tr>
                   ))
                 ) : tasks.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="px-5 py-10 text-center text-gray-500">No tasks available yet.</td>
+                    <td colSpan="6" className="px-5 py-10 text-center text-foreground-muted">No tasks available yet.</td>
                   </tr>
                 ) : (
                   tasks.map((task, index) => (
-                    <tr key={task._id} className={`border-t border-slate-100 transition hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}>
-                      <td className="px-5 py-4 font-semibold text-gray-900">{task.title}</td>
+                    <tr key={task._id} className={`border-t border-border transition hover:bg-background ${index % 2 === 0 ? 'bg-surface' : 'bg-background/50'}`}>
+                      <td className="px-5 py-4 font-semibold text-foreground">{task.title}</td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-slate-950 via-gray-850 to-slate-900 text-xs font-bold text-white">
+                          <div className="grid h-9 w-9 place-items-center rounded-full bg-accent text-xs font-semibold text-white shadow-xs">
                             {ownerInitials(task.owner?.name)}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">{task.owner?.name || 'Unknown'}</p>
-                            <p className="text-xs text-gray-500">{task.owner?.email || ''}</p>
+                            <p className="font-medium text-foreground">{task.owner?.name || 'Unknown'}</p>
+                            <p className="text-xs text-foreground-muted">{task.owner?.email || ''}</p>
                           </div>
                         </div>
                       </td>
@@ -142,12 +142,12 @@ function AdminPanel() {
                         </span>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="inline-flex items-center gap-2 text-gray-700 capitalize">
+                        <span className="inline-flex items-center gap-2 text-foreground capitalize">
                           <span className={`h-2.5 w-2.5 rounded-full ${priorityDot[task.priority]}`} />
                           {task.priority}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-gray-600">
+                      <td className="px-5 py-4 text-foreground-muted">
                         {new Date(task.createdAt).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -158,10 +158,10 @@ function AdminPanel() {
                         <button
                           type="button"
                           onClick={() => deleteTask(task._id)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-red-600 transition hover:bg-red-50"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-danger transition hover:bg-red-50"
                           aria-label="Delete task"
                         >
-                          <TrashIcon className="h-5 w-5" />
+                          <TrashIcon className="h-5 w-5" strokeWidth={1.5} />
                         </button>
                       </td>
                     </tr>
@@ -173,7 +173,7 @@ function AdminPanel() {
         </section>
 
         <div className="mt-4 text-center sm:text-left">
-          <Link to="/dashboard" className="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 transition hover:bg-gray-50">
+          <Link to="/dashboard" className="qp-button-secondary px-4 text-sm">
             Back to Dashboard
           </Link>
         </div>

@@ -11,8 +11,8 @@ html {
 }
 
 body {
-  background-color: #FCFBF9;
-  color: #292524;
+  background-color: #FAFAF8;
+  color: #14171F;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -20,11 +20,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(217, 119, 6, 0.04), transparent 28%),
-    radial-gradient(circle at top right, rgba(194, 65, 12, 0.03), transparent 24%),
-    linear-gradient(120deg, #FCFBF9, #F7F5F0, #FCFBF9);
-  background-size: 200% 200%;
-  animation: bg-shift 18s ease-in-out infinite;
+    radial-gradient(circle at 88% 5%, rgba(43, 78, 255, 0.045), transparent 26rem),
+    linear-gradient(#FAFAF8, #FAFAF8);
 }
 
 body::before {
@@ -32,15 +29,15 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.28;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 95%);
+  background-image: radial-gradient(rgba(20, 23, 31, 0.08) 0.7px, transparent 0.7px);
+  background-size: 20px 20px;
+  opacity: 0.16;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 76%);
 }
 
 ::selection {
-  background: rgba(15, 23, 42, 0.14);
-  color: #0f172a;
+  background: #EEF1FF;
+  color: #14171F;
 }
 
 .auth-bg,
@@ -48,16 +45,125 @@ body::before {
   background: transparent;
 }
 
+.qp-heading {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.qp-card {
+  background: #FFFFFF;
+  border: 1px solid #E7E6E2;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(20, 23, 31, 0.04);
+}
+
+.qp-card-interactive {
+  transition: box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qp-card-interactive:hover {
+  border-color: #D8D7D2;
+  box-shadow: 0 8px 24px rgba(20, 23, 31, 0.08), 0 2px 6px rgba(20, 23, 31, 0.04);
+  transform: translateY(-2px);
+}
+
+.qp-button,
+.qp-button-secondary,
+.qp-button-ghost {
+  align-items: center;
+  border-radius: 8px;
+  display: inline-flex;
+  font-weight: 500;
+  justify-content: center;
+  min-height: 44px;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qp-button {
+  background: #2B4EFF;
+  border: 1px solid #2B4EFF;
+  box-shadow: 0 1px 2px rgba(20, 23, 31, 0.04);
+  color: #FFFFFF;
+}
+
+.qp-button:hover {
+  background: #2442db;
+  box-shadow: 0 2px 8px rgba(20, 23, 31, 0.06), 0 1px 2px rgba(20, 23, 31, 0.04);
+}
+
+.qp-button:active {
+  box-shadow: 0 1px 2px rgba(20, 23, 31, 0.04);
+  transform: translateY(1px);
+}
+
+.qp-button-secondary {
+  background: transparent;
+  border: 1px solid #D8D7D2;
+  color: #14171F;
+}
+
+.qp-button-secondary:hover {
+  background: #FAFAF8;
+  border-color: #14171F;
+}
+
+.qp-button-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #5B6270;
+}
+
+.qp-button-ghost:hover {
+  color: #14171F;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.qp-input {
+  background: #FFFFFF;
+  border: 1px solid #D8D7D2;
+  border-radius: 8px;
+  color: #14171F;
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qp-input:focus {
+  border-color: #2B4EFF;
+  box-shadow: 0 0 0 3px rgba(43, 78, 255, 0.16);
+  outline: none;
+}
+
+.qp-icon-badge {
+  align-items: center;
+  background: #EEF1FF;
+  border-radius: 4px;
+  color: #2B4EFF;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.qp-focus:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  box-shadow: 0 0 0 3px rgba(43, 78, 255, 0.16);
+  outline: 1px solid #2B4EFF;
+  outline-offset: 2px;
+}
+
 .page-enter {
-  animation: page-fade 0.35s ease both;
+  animation: page-fade 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-rise {
-  animation: rise 0.4s ease forwards;
+  animation: rise 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease both;
+  animation: fade-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-pulse-soft {
@@ -108,12 +214,12 @@ body::before {
 @keyframes pulse-soft {
   0%,
   100% {
-    transform: scale(1);
-    box-shadow: 0 18px 30px rgba(99, 102, 241, 0.2);
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(20, 23, 31, 0.04);
   }
   50% {
-    transform: scale(1.03);
-    box-shadow: 0 22px 36px rgba(99, 102, 241, 0.28);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(20, 23, 31, 0.06), 0 1px 2px rgba(20, 23, 31, 0.04);
   }
 }
 
@@ -123,15 +229,66 @@ body::before {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(247, 245, 240, 0.75);
+  background: #FAFAF8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #57534e, #292524);
+  background: #D8D7D2;
   border-radius: 999px;
-  border: 2px solid #FCFBF9;
+  border: 2px solid #FAFAF8;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #292524, #1c1917);
+  background: #5B6270;
+}
+
+.rbc-toolbar button {
+  background: #FFFFFF;
+  border: 1px solid #D8D7D2;
+  border-radius: 8px;
+  color: #14171F;
+  min-height: 36px;
+  padding: 6px 12px;
+}
+
+.rbc-toolbar button:hover,
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button:active {
+  background: #EEF1FF;
+  border-color: #2B4EFF;
+  box-shadow: none;
+  color: #14171F;
+}
+
+.rbc-month-view,
+.rbc-time-view,
+.rbc-agenda-view,
+.rbc-header,
+.rbc-day-bg + .rbc-day-bg,
+.rbc-month-row + .rbc-month-row {
+  border-color: #E7E6E2;
+}
+
+.rbc-today {
+  background: #EEF1FF;
+}
+
+.rbc-off-range-bg {
+  background: #FAFAF8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  .qp-card-interactive:hover,
+  .qp-button:active {
+    transform: none;
+  }
 }
