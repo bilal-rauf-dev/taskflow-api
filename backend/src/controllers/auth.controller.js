@@ -120,8 +120,37 @@ const getMe = async (req, res, next) => {
   }
 };
 
+const updateMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+        errors: ['Authenticated user does not exist']
+      });
+    }
+
+    user.name = req.body.name;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        token: signToken(user),
+        user: formatUser(user)
+      },
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  updateMe
 };

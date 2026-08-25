@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const Task = require('../models/Task');
 const Notification = require('../models/Notification');
-const { getIO } = require('../config/socket');
+const { getIO, userRoom } = require('../config/socket');
 
 // Scans daily at 9:00 AM (0 9 * * *)
 // You can use '*/5 * * * *' to run every 5 minutes during testing
@@ -40,7 +40,7 @@ const startDeadlineScan = () => {
           // Send WebSocket notification
           try {
             const io = getIO();
-            io.to(task.owner.toString()).emit('new_notification', notification);
+            io.to(userRoom(task.owner)).emit('new_notification', notification);
           } catch (socketErr) {
             console.error('Socket notification push failed in cron daemon:', socketErr.message);
           }

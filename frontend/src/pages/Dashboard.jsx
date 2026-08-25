@@ -71,9 +71,14 @@ function Dashboard() {
       setTasks((prev) => prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)));
     });
 
+    socket.on('task_deleted', (deletedTask) => {
+      setTasks((prev) => prev.filter((task) => task._id !== deletedTask._id));
+    });
+
     return () => {
       socket.off('task_created');
       socket.off('task_updated');
+      socket.off('task_deleted');
     };
   }, [socket, user, isAdmin]);
 

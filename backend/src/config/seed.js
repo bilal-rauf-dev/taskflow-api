@@ -7,6 +7,13 @@ const Task = require('../models/Task');
 
 dotenv.config();
 
+const daysFromToday = (days) => {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + days);
+  return date;
+};
+
 const seed = async () => {
   try {
     await connectDB();
@@ -50,35 +57,35 @@ const seed = async () => {
           description: 'Complete the backend documentation and verify all routes.',
           status: 'completed',
           priority: 'high',
-          dueDate: new Date('2026-06-05')
+          dueDate: daysFromToday(-3)
         },
         {
           title: 'Implement JWT login flow',
           description: 'Test auth endpoints and confirm token behavior.',
           status: 'in-progress',
           priority: 'high',
-          dueDate: new Date('2026-06-10')
+          dueDate: daysFromToday(1)
         },
         {
           title: 'Design dashboard cards',
           description: 'Refine the summary cards and visual hierarchy.',
           status: 'pending',
           priority: 'medium',
-          dueDate: new Date('2026-06-14')
+          dueDate: daysFromToday(4)
         },
         {
           title: 'Prepare admin panel review',
           description: 'Ensure admin-only actions behave as expected.',
           status: 'pending',
           priority: 'low',
-          dueDate: new Date('2026-06-18')
+          dueDate: daysFromToday(8)
         },
         {
           title: 'Add mobile responsive polish',
           description: 'Adjust layouts for phones and smaller tablets.',
           status: 'completed',
           priority: 'medium',
-          dueDate: new Date('2026-06-07')
+          dueDate: daysFromToday(-1)
         }
       ];
 

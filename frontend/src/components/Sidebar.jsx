@@ -11,6 +11,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
+import NotificationInbox from './NotificationInbox';
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { user, isAdmin, logout } = useAuth();
@@ -122,13 +123,16 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
             <p className="text-xs font-semibold text-foreground truncate">{user?.name}</p>
             <p className="text-[10px] text-foreground-muted truncate">{user?.email}</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="rounded-sm p-2 text-danger transition hover:bg-red-50 hover:text-red-700"
-            aria-label="Logout"
-          >
-            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationInbox />
+            <button
+              onClick={handleLogout}
+              className="rounded-sm p-2 text-danger transition hover:bg-red-50 hover:text-red-700"
+              aria-label="Logout"
+            >
+              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </aside>

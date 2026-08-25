@@ -34,7 +34,7 @@ function Login() {
         password: sanitizeValue(form.password)
       });
       const { token, user } = response.data.data;
-      login(token, user);
+      login(token, user, rememberMe);
       toast.success(rememberMe ? 'Welcome back. Session remembered.' : 'Welcome back.');
       navigate('/dashboard');
     } catch (error) {

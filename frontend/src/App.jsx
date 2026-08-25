@@ -25,8 +25,11 @@ function App() {
     socket.on('new_notification', (notification) => {
       const senderName = notification.sender?.name || 'Someone';
       const taskTitle = notification.task?.title || 'a task';
+      const message = notification.type === 'deadline_warning'
+        ? `⏰ Deadline approaching for "${taskTitle}"`
+        : `💬 ${senderName} commented on task "${taskTitle}"`;
 
-      toast(`💬 ${senderName} commented on task "${taskTitle}"`, {
+      toast(message, {
         duration: 5000,
         style: {
           background: '#EEF2FF',

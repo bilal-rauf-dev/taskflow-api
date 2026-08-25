@@ -30,6 +30,14 @@ const createTaskValidation = [
     .isISO8601()
     .toDate()
     .withMessage('Due date must be a valid date'),
+  body('assignees')
+    .optional()
+    .isArray()
+    .withMessage('Assignees must be an array'),
+  body('assignees.*')
+    .optional()
+    .isMongoId()
+    .withMessage('Each assignee must be a valid user id'),
   validate
 ];
 
@@ -50,6 +58,14 @@ const updateTaskValidation = [
     .isISO8601()
     .toDate()
     .withMessage('Due date must be a valid date'),
+  body('assignees')
+    .optional()
+    .isArray()
+    .withMessage('Assignees must be an array'),
+  body('assignees.*')
+    .optional()
+    .isMongoId()
+    .withMessage('Each assignee must be a valid user id'),
   validate
 ];
 

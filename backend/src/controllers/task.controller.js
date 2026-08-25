@@ -1,13 +1,17 @@
 const Task = require('../models/Task');
 const ActivityLog = require('../models/ActivityLog');
-const { getIO } = require('../config/socket');
+const { getIO, userRoom, taskRoom, adminRoom } = require('../config/socket');
+const { canAccessTask, getTaskParticipantIds } = require('../utils/taskAccess');
 
-const canAccessTask = (task, user) => {
-  if (user.role === 'admin') {
-    return true;
-  }
+const emitTaskEvent = (eventName, task) => {
+  const io = getIO();
+  const rooms = [
+    ...getTaskParticipantIds(task).map(userRoom),
+    taskRoom(task._id),
+    adminRoom
+  ];
 
-  return task.owner.toString() === user.id;
+  io.to(rooms).emit(eventName, task);
 };
 
 const getTasks = async (req, res, next) => {
@@ -27,7 +31,7 @@ const getTasks = async (req, res, next) => {
 
 const createTask = async (req, res, next) => {
   try {
-    const { title, description, status, priority, dueDate } = req.body;
+    const { title, description, status, priority, dueDate, assignees } = req.body;
 
     const task = await Task.create({
       title,
@@ -35,7 +39,8 @@ const createTask = async (req, res, next) => {
       status,
       priority,
       dueDate,
-      owner: req.user.id
+      owner: req.user.id,
+      assignees: req.user.role === 'admin' && Array.isArray(assignees) ? assignees : []
     });
 
     // Log Activity
@@ -49,7 +54,7 @@ const createTask = async (req, res, next) => {
     // Broadcast update
     try {
       const io = getIO();
-      io.emit('task_created', task);
+      emitTaskEvent('task_created', task);
     } catch (socketErr) {
       console.error('Socket task_created emit failed:', socketErr.message);
     }
@@ -118,6 +123,9 @@ const updateTask = async (req, res, next) => {
     if (req.body.dueDate !== undefined) {
       allowedFields.push('dueDate');
     }
+    if (req.user.role === 'admin' && req.body.assignees !== undefined) {
+      allowedFields.push('assignees');
+    }
 
     const changes = [];
     allowedFields.forEach((field) => {
@@ -164,13 +172,9 @@ const updateTask = async (req, res, next) => {
       }
     }
 
-    // Emit real-time task update to current users watching the board/modal
-    try {
-      const io = getIO();
-      // Emit to task modal room
-      io.to(`task_${task._id}`).emit('task_updated', task);
-      // Emit to all users for board/list update
-      io.emit('task_updated', task);
+      // Emit only to users allowed to access this task and its active task room.
+      try {
+      emitTaskEvent('task_updated', task);
     } catch (socketErr) {
       console.error('Socket task_updated emit failed:', socketErr.message);
     }
@@ -206,6 +210,12 @@ const deleteTask = async (req, res, next) => {
     }
 
     await task.deleteOne();
+
+    try {
+      emitTaskEvent('task_deleted', task);
+    } catch (socketErr) {
+      console.error('Socket task_deleted emit failed:', socketErr.message);
+    }
 
     return res.status(200).json({
       success: true,

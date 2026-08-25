@@ -1,15 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { API_ORIGIN } from '../api/config';
 
 const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !token) {
       if (socket) {
         socket.disconnect();
         setSocket(null);
@@ -18,25 +19,22 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Connect to backend server
-    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    const newSocket = io(socketUrl, {
+    const newSocket = io(API_ORIGIN, {
       transports: ['websocket'],
-      upgrade: false
+      upgrade: false,
+      auth: { token }
     });
 
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
-      const userId = user.id || user._id;
-      if (userId) {
-        newSocket.emit('join_user_room', userId);
-      }
+      // The server joins this authenticated socket to its own user/admin rooms.
     });
 
     return () => {
       newSocket.disconnect();
     };
-  }, [user]);
+  }, [user, token]);
 
   return (
     <SocketContext.Provider value={socket}>

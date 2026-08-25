@@ -56,7 +56,7 @@ function Register() {
       });
 
       const { token, user } = response.data.data;
-      login(token, user);
+      login(token, user, true);
       toast.success('Account created successfully');
       navigate('/dashboard');
     } catch (error) {

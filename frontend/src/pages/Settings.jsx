@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Cog6ToothIcon, BellIcon, SpeakerWaveIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import api from '../api/axios';
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, updateSession } = useAuth();
   const [preferences, setPreferences] = useState({
     theme: 'warm',
     soundAlerts: true,
     emailAlerts: false
   });
+  const [name, setName] = useState(user?.name || '');
+  const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
     const savedPrefs = localStorage.getItem('taskflow_preferences');
@@ -18,6 +21,10 @@ export default function Settings() {
     }
   }, []);
 
+  useEffect(() => {
+    setName(user?.name || '');
+  }, [user?.name]);
+
   const handleToggle = (key) => {
     const updated = { ...preferences, [key]: !preferences[key] };
     setPreferences(updated);
@@ -25,9 +32,20 @@ export default function Settings() {
     toast.success('Preference updated successfully');
   };
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    toast.success('Profile settings updated successfully');
+    setSavingProfile(true);
+
+    try {
+      const response = await api.put('/auth/me', { name: name.trim() });
+      const { token, user: updatedUser } = response.data.data;
+      updateSession(token, updatedUser);
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.errors?.[0] || 'Unable to update profile');
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   return (
@@ -118,7 +136,8 @@ export default function Settings() {
                   <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Full Name</span>
                   <input
                     type="text"
-                    defaultValue={user?.name || ''}
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
                     required
                     className="qp-input w-full px-4 py-2.5 text-xs font-medium"
                   />
@@ -138,9 +157,10 @@ export default function Settings() {
               <div className="flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="qp-button px-6 py-2.5 text-xs"
+                  disabled={savingProfile || !name.trim()}
+                  className="qp-button px-6 py-2.5 text-xs disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Save Profile
+                  {savingProfile ? 'Saving…' : 'Save Profile'}
                 </button>
               </div>
             </form>

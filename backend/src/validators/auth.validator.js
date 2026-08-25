@@ -27,7 +27,18 @@ const loginValidation = [
   validate
 ];
 
+const updateProfileValidation = [
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Name is required')
+    .isLength({ max: 80 })
+    .withMessage('Name must be 80 characters or fewer'),
+  validate
+];
+
 module.exports = {
   registerValidation,
-  loginValidation
+  loginValidation,
+  updateProfileValidation
 };
