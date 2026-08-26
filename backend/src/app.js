@@ -9,6 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 
 const authRoutes = require('./routes/v1/auth.routes');
 const taskRoutes = require('./routes/v1/task.routes');
+const boardRoutes = require('./routes/v1/board.routes');
 const notificationRoutes = require('./routes/v1/notification.routes');
 const adminRoutes = require('./routes/v1/admin.routes');
 const swaggerSpec = require('./swagger/swagger');
@@ -47,6 +48,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tasks', taskRoutes);
+app.use('/api/v1/boards', boardRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

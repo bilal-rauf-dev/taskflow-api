@@ -1,7 +1,10 @@
 const Task = require('../models/Task');
+const Board = require('../models/Board');
+const Column = require('../models/Column');
 const ActivityLog = require('../models/ActivityLog');
 const { getIO, userRoom, taskRoom, adminRoom } = require('../config/socket');
 const { canAccessTask, getTaskParticipantIds } = require('../utils/taskAccess');
+const { canAccessBoard } = require('../utils/boardAccess');
 
 const emitTaskEvent = (eventName, task) => {
   const io = getIO();
@@ -346,6 +349,111 @@ const logTimeSpent = async (req, res, next) => {
   }
 };
 
+const moveTask = async (req, res, next) => {
+  try {
+    const { boardId, taskId } = req.params;
+    const { columnId, position } = req.body;
+
+    const board = await Board.findById(boardId);
+    if (!board) {
+      return res.status(404).json({
+        success: false,
+        message: 'Board not found',
+        errors: ['Board with provided id does not exist']
+      });
+    }
+
+    if (!canAccessBoard(board, req.user, 'editor')) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden',
+        errors: ['You need editor access to move tasks on this board']
+      });
+    }
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+        errors: ['Task with provided id does not exist']
+      });
+    }
+
+    if (task.board && task.board.toString() !== boardId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Task belongs to a different board',
+        errors: ['Cannot move a task across boards']
+      });
+    }
+
+    const targetColumn = await Column.findOne({ _id: columnId, board: boardId });
+    if (!targetColumn) {
+      return res.status(404).json({
+        success: false,
+        message: 'Column not found',
+        errors: ['Column with provided id does not exist on this board']
+      });
+    }
+
+    const previousColumnId = task.column ? task.column.toString() : null;
+    const movingColumns = previousColumnId !== columnId;
+
+    if (movingColumns && targetColumn.wipLimit) {
+      const currentCount = await Task.countDocuments({ column: targetColumn._id });
+      if (currentCount >= targetColumn.wipLimit) {
+        return res.status(400).json({
+          success: false,
+          message: 'WIP limit reached',
+          errors: [`Column "${targetColumn.name}" is at its WIP limit of ${targetColumn.wipLimit}`]
+        });
+      }
+    }
+
+    // Close the gap left in the source column when the task is leaving it.
+    if (movingColumns && previousColumnId) {
+      const sourceSiblings = await Task.find({
+        column: previousColumnId,
+        _id: { $ne: task._id }
+      }).sort({ position: 1 });
+
+      await Promise.all(
+        sourceSiblings.map((sibling, index) => Task.updateOne({ _id: sibling._id }, { position: index }))
+      );
+    }
+
+    // Insert the task into the destination column at the requested position and
+    // renumber its siblings around it.
+    const destinationSiblings = await Task.find({
+      column: targetColumn._id,
+      _id: { $ne: task._id }
+    }).sort({ position: 1 });
+
+    const clampedPosition = Math.max(0, Math.min(position, destinationSiblings.length));
+    destinationSiblings.splice(clampedPosition, 0, task);
+
+    await Promise.all(
+      destinationSiblings.map((sibling, index) =>
+        sibling._id.equals(task._id) ? Promise.resolve() : Task.updateOne({ _id: sibling._id }, { position: index })
+      )
+    );
+
+    task.board = boardId;
+    task.column = targetColumn._id;
+    task.position = clampedPosition;
+    await task.save();
+
+    return res.status(200).json({
+      success: true,
+      data: { task, previousColumnId },
+      message: 'Task moved successfully'
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getTasks,
   createTask,
@@ -355,5 +463,6 @@ module.exports = {
   getAllTasksForAdmin,
   getTaskActivity,
   getSmartSortedTasks,
-  logTimeSpent
+  logTimeSpent,
+  moveTask
 };
