@@ -39,6 +39,8 @@ const createBoard = async (req, res, next) => {
       }))
     );
 
+    await board.populate('members.user', 'name email');
+
     return res.status(201).json({
       success: true,
       data: { board, columns },
@@ -66,7 +68,7 @@ const getBoards = async (req, res, next) => {
 
 const getBoardById = async (req, res, next) => {
   try {
-    const board = await Board.findById(req.params.boardId);
+    const board = await Board.findById(req.params.boardId).populate('members.user', 'name email');
 
     if (!board) {
       return res.status(404).json({
@@ -151,6 +153,7 @@ const updateBoard = async (req, res, next) => {
     if (req.body.name !== undefined) board.name = req.body.name;
     if (req.body.description !== undefined) board.description = req.body.description;
     await board.save();
+    await board.populate('members.user', 'name email');
 
     return res.status(200).json({
       success: true,
@@ -248,6 +251,7 @@ const addMember = async (req, res, next) => {
 
     board.members.push({ user: targetUser._id, role });
     await board.save();
+    await board.populate('members.user', 'name email');
 
     emitMembershipChanged(board, 'added', targetUser._id);
 
@@ -301,6 +305,7 @@ const changeMemberRole = async (req, res, next) => {
 
     membership.role = req.body.role;
     await board.save();
+    await board.populate('members.user', 'name email');
 
     emitMembershipChanged(board, 'role_changed', userId);
 
@@ -355,6 +360,7 @@ const removeMember = async (req, res, next) => {
     }
 
     await board.save();
+    await board.populate('members.user', 'name email');
 
     emitMembershipChanged(board, 'removed', userId);
 

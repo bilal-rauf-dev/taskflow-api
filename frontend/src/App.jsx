@@ -6,6 +6,8 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Boards from './pages/Boards';
+import BoardView from './pages/BoardView';
 import AdminPanel from './pages/AdminPanel';
 import AdminProductivity from './pages/AdminProductivity';
 import Calendar from './pages/Calendar';
@@ -61,6 +63,8 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/boards" element={<Boards />} />
+          <Route path="/boards/:boardId" element={<BoardView />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/timer" element={<Timer />} />
           <Route path="/settings" element={<Settings />} />
