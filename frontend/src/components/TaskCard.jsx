@@ -34,7 +34,7 @@ function TaskCard({ task, onEdit, onDelete, draggable, onDragStart, onKeyDown })
 
   return (
     <article
-      tabIndex={0}
+      tabIndex={draggable ? 0 : -1}
       onKeyDown={onKeyDown}
       draggable={draggable}
       onDragStart={onDragStart}

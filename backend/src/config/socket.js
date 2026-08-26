@@ -1,12 +1,15 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const Task = require('../models/Task');
+const Board = require('../models/Board');
 const { canAccessTask } = require('../utils/taskAccess');
+const { canAccessBoard } = require('../utils/boardAccess');
 
 let io;
 
 const userRoom = (userId) => `user:${userId}`;
 const taskRoom = (taskId) => `task:${taskId}`;
+const boardRoom = (boardId) => `board:${boardId}`;
 const adminRoom = 'role:admin';
 
 const initSocket = (server) => {
@@ -36,7 +39,7 @@ const initSocket = (server) => {
       };
 
       return next();
-    } catch (error) {
+    } catch {
       return next(new Error('Invalid or expired token'));
     }
   });
@@ -62,13 +65,32 @@ const initSocket = (server) => {
 
         socket.join(taskRoom(taskId));
         callback?.({ success: true });
-      } catch (error) {
+      } catch {
         callback?.({ success: false, message: 'Invalid task room' });
       }
     });
 
     socket.on('leave_task_room', (taskId) => {
       socket.leave(taskRoom(taskId));
+    });
+
+    socket.on('join_board_room', async (boardId, callback) => {
+      try {
+        const board = await Board.findById(boardId);
+        if (!board || !canAccessBoard(board, socket.user, 'viewer')) {
+          callback?.({ success: false, message: 'Forbidden' });
+          return;
+        }
+
+        socket.join(boardRoom(boardId));
+        callback?.({ success: true });
+      } catch {
+        callback?.({ success: false, message: 'Invalid board room' });
+      }
+    });
+
+    socket.on('leave_board_room', (boardId) => {
+      socket.leave(boardRoom(boardId));
     });
 
     socket.on('disconnect', () => {
@@ -86,4 +108,4 @@ const getIO = () => {
   return io;
 };
 
-module.exports = { initSocket, getIO, userRoom, taskRoom, adminRoom };
+module.exports = { initSocket, getIO, userRoom, taskRoom, boardRoom, adminRoom };

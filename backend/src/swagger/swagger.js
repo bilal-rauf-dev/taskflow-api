@@ -47,6 +47,37 @@ const options = {
             updatedAt: { type: 'string', format: 'date-time' }
           }
         },
+        Board: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            owner: { type: 'string' },
+            members: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  user: { type: 'string' },
+                  role: { type: 'string', enum: ['owner', 'editor', 'viewer'] }
+                }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Column: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            board: { type: 'string' },
+            name: { type: 'string' },
+            order: { type: 'integer' },
+            wipLimit: { type: 'integer', nullable: true }
+          }
+        },
         ApiSuccessResponse: {
           type: 'object',
           properties: {

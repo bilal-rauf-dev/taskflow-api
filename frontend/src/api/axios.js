@@ -7,7 +7,9 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Mirrors AuthContext's own storage resolution: a "remember me" login
+    // lands in localStorage, otherwise the session lives in sessionStorage.
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Cog6ToothIcon, BellIcon, SpeakerWaveIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
 import api from '../api/axios';
 
 export default function Settings() {

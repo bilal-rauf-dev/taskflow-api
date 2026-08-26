@@ -160,7 +160,7 @@ function Dashboard() {
       );
       await api.put(`/tasks/${taskId}`, { status: targetStatus });
       toast.success(`Task moved to ${targetStatus.replace('-', ' ')}`);
-    } catch (error) {
+    } catch {
       toast.error('Failed to move task');
       setTasks(previousTasks);
     }
@@ -206,7 +206,7 @@ function Dashboard() {
         try {
           await api.put(`/tasks/${task._id}`, { status: nextStatus });
           setAriaAnnouncement(`Moved task "${task.title}" to column "${nextStatus.replace('-', ' ')}". Press Space or Enter to confirm and drop.`);
-        } catch (err) {
+        } catch {
           setTasks(previousTasks);
           setAriaAnnouncement(`Failed to move task. Reverted to column "${statusFlow[currentIndex].replace('-', ' ')}".`);
         }

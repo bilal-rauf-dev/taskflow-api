@@ -299,7 +299,7 @@ function CommentsSection({ taskId }) {
       const addedComment = res.data.data.comment;
       setComments((prev) => [...prev, addedComment]);
       setNewComment('');
-    } catch (err) {
+    } catch {
       toast.error('Failed to post comment');
     } finally {
       setLoading(false);

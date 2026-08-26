@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Squares2X2Icon,
+  ViewColumnsIcon,
   CalendarIcon,
   ClockIcon,
   Cog6ToothIcon,
@@ -29,6 +30,7 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
   const links = [
     { name: 'Dashboard', to: '/dashboard', icon: Squares2X2Icon },
+    { name: 'Boards', to: '/boards', icon: ViewColumnsIcon },
     { name: 'Calendar', to: '/calendar', icon: CalendarIcon },
     { name: 'Timer', to: '/timer', icon: ClockIcon },
     { name: 'Settings', to: '/settings', icon: Cog6ToothIcon }
