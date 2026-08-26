@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useSocket } from './context/SocketContext';
 import Landing from './pages/Landing';

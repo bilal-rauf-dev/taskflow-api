@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon, UserPlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { getMemberId } from '../utils/boardMembers';
 
 const ROLE_OPTIONS = ['viewer', 'editor'];
-
-export const getMemberId = (member) => member.user?._id || member.user;
 
 function BoardMembersPanel({ isOpen, onClose, board, isOwner, onInvite, onChangeRole, onRemove }) {
   const [email, setEmail] = useState('');

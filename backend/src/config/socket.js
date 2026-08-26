@@ -39,7 +39,7 @@ const initSocket = (server) => {
       };
 
       return next();
-    } catch (error) {
+    } catch {
       return next(new Error('Invalid or expired token'));
     }
   });
@@ -65,7 +65,7 @@ const initSocket = (server) => {
 
         socket.join(taskRoom(taskId));
         callback?.({ success: true });
-      } catch (error) {
+      } catch {
         callback?.({ success: false, message: 'Invalid task room' });
       }
     });
@@ -84,7 +84,7 @@ const initSocket = (server) => {
 
         socket.join(boardRoom(boardId));
         callback?.({ success: true });
-      } catch (error) {
+      } catch {
         callback?.({ success: false, message: 'Invalid board room' });
       }
     });

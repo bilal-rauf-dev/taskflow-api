@@ -25,7 +25,7 @@ export default function AdminProductivity() {
         const total = rawReport.reduce((sum, item) => sum + item.completions, 0);
         const avg = rawReport.length > 0 ? (total / rawReport.length).toFixed(1) : 0;
         setStats({ totalCompletions: total, weeklyAvg: avg });
-      } catch (err) {
+      } catch {
         toast.error('Failed to load productivity analytics');
       } finally {
         setLoading(false);

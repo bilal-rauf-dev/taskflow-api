@@ -56,7 +56,6 @@ const createTask = async (req, res, next) => {
 
     // Broadcast update
     try {
-      const io = getIO();
       emitTaskEvent('task_created', task);
     } catch (socketErr) {
       console.error('Socket task_created emit failed:', socketErr.message);

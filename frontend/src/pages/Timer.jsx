@@ -46,7 +46,7 @@ export default function Timer() {
         try {
           await api.post(`/tasks/${selectedTaskId}/time-log`, { durationSeconds: FOCUS_TIME });
           toast.success('Focus duration saved to task logs');
-        } catch (err) {
+        } catch {
           toast.error('Failed to log focus duration on server');
         }
       }

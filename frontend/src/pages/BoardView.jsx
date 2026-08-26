@@ -9,7 +9,8 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { useBoardDnd } from '../hooks/useBoardDnd';
 import BoardColumn from '../components/BoardColumn';
-import BoardMembersPanel, { getMemberId } from '../components/BoardMembersPanel';
+import BoardMembersPanel from '../components/BoardMembersPanel';
+import { getMemberId } from '../utils/boardMembers';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
 
@@ -115,6 +116,10 @@ function BoardView() {
     return () => {
       cancelled = true;
     };
+    // fetchBoard/fetchTasks are redefined every render (not memoized);
+    // depending on boardId alone is intentional so this only refetches on
+    // navigation, not every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardId]);
 
   useEffect(() => {
