@@ -2,7 +2,21 @@ const Board = require('../models/Board');
 const Column = require('../models/Column');
 const Task = require('../models/Task');
 const User = require('../models/User');
+const { getIO, userRoom, boardRoom } = require('../config/socket');
 const { canAccessBoard } = require('../utils/boardAccess');
+
+const emitMembershipChanged = (board, action, userId) => {
+  try {
+    const io = getIO();
+    const payload = { board, action, userId };
+    io.to(boardRoom(board._id)).emit('membership_changed', payload);
+    // Also reach the affected member directly in case they haven't joined
+    // this board's room yet (e.g. they were just added to it).
+    io.to(userRoom(userId)).emit('membership_changed', payload);
+  } catch (socketErr) {
+    console.error('Socket membership_changed emit failed:', socketErr.message);
+  }
+};
 
 const DEFAULT_COLUMNS = ['To Do', 'In Progress', 'Completed'];
 
@@ -235,6 +249,8 @@ const addMember = async (req, res, next) => {
     board.members.push({ user: targetUser._id, role });
     await board.save();
 
+    emitMembershipChanged(board, 'added', targetUser._id);
+
     return res.status(201).json({
       success: true,
       data: { board },
@@ -285,6 +301,8 @@ const changeMemberRole = async (req, res, next) => {
 
     membership.role = req.body.role;
     await board.save();
+
+    emitMembershipChanged(board, 'role_changed', userId);
 
     return res.status(200).json({
       success: true,
@@ -337,6 +355,8 @@ const removeMember = async (req, res, next) => {
     }
 
     await board.save();
+
+    emitMembershipChanged(board, 'removed', userId);
 
     return res.status(200).json({
       success: true,

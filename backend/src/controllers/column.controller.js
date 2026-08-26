@@ -1,6 +1,7 @@
 const Board = require('../models/Board');
 const Column = require('../models/Column');
 const Task = require('../models/Task');
+const { getIO, boardRoom } = require('../config/socket');
 const { canAccessBoard } = require('../utils/boardAccess');
 
 const createColumn = async (req, res, next) => {
@@ -32,6 +33,12 @@ const createColumn = async (req, res, next) => {
       wipLimit: req.body.wipLimit ?? null,
       order
     });
+
+    try {
+      getIO().to(boardRoom(board._id)).emit('column_added', { column });
+    } catch (socketErr) {
+      console.error('Socket column_added emit failed:', socketErr.message);
+    }
 
     return res.status(201).json({
       success: true,
@@ -75,6 +82,12 @@ const updateColumn = async (req, res, next) => {
     if (req.body.name !== undefined) column.name = req.body.name;
     if (req.body.wipLimit !== undefined) column.wipLimit = req.body.wipLimit;
     await column.save();
+
+    try {
+      getIO().to(boardRoom(board._id)).emit('column_updated', { column });
+    } catch (socketErr) {
+      console.error('Socket column_updated emit failed:', socketErr.message);
+    }
 
     return res.status(200).json({
       success: true,
@@ -133,6 +146,16 @@ const deleteColumn = async (req, res, next) => {
       )
     );
 
+    const updatedColumns = await Column.find({ board: board._id }).sort({ order: 1 });
+
+    try {
+      getIO()
+        .to(boardRoom(board._id))
+        .emit('column_deleted', { columnId: req.params.columnId, columns: updatedColumns });
+    } catch (socketErr) {
+      console.error('Socket column_deleted emit failed:', socketErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       data: { columnId: req.params.columnId },
@@ -183,6 +206,14 @@ const reorderColumns = async (req, res, next) => {
     );
 
     const updatedColumns = await Column.find({ board: board._id }).sort({ order: 1 });
+
+    try {
+      getIO()
+        .to(boardRoom(board._id))
+        .emit('column_reordered', { columns: updatedColumns });
+    } catch (socketErr) {
+      console.error('Socket column_reordered emit failed:', socketErr.message);
+    }
 
     return res.status(200).json({
       success: true,

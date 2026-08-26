@@ -2,7 +2,7 @@ const Task = require('../models/Task');
 const Board = require('../models/Board');
 const Column = require('../models/Column');
 const ActivityLog = require('../models/ActivityLog');
-const { getIO, userRoom, taskRoom, adminRoom } = require('../config/socket');
+const { getIO, userRoom, taskRoom, boardRoom, adminRoom } = require('../config/socket');
 const { canAccessTask, getTaskParticipantIds } = require('../utils/taskAccess');
 const { canAccessBoard } = require('../utils/boardAccess');
 
@@ -443,6 +443,22 @@ const moveTask = async (req, res, next) => {
     task.column = targetColumn._id;
     task.position = clampedPosition;
     await task.save();
+
+    // Preserve the existing per-task/participant notification path so any UI
+    // still watching this task via task_updated keeps working unchanged.
+    try {
+      emitTaskEvent('task_updated', task);
+    } catch (socketErr) {
+      console.error('Socket task_updated emit failed:', socketErr.message);
+    }
+
+    try {
+      getIO()
+        .to(boardRoom(boardId))
+        .emit('task_moved', { task, previousColumnId, boardId });
+    } catch (socketErr) {
+      console.error('Socket task_moved emit failed:', socketErr.message);
+    }
 
     return res.status(200).json({
       success: true,
