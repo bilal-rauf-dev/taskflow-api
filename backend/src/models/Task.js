@@ -31,6 +31,12 @@ const taskSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
+    assignees: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
     timeLog: [
       {
         durationSeconds: {

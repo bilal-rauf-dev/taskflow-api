@@ -79,20 +79,22 @@ export default function Timer() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="rounded-3xl border border-warm-surface bg-white p-6 shadow-warm-lg text-center space-y-6 sm:p-8">
+      <div className="qp-card relative space-y-6 overflow-hidden p-6 text-center shadow-[8px_8px_0_#F472B6] sm:p-8">
+        <span className="shape shape-square -right-5 -top-5 h-16 w-16 bg-tertiary" aria-hidden="true" />
+        <span className="shape shape-circle -bottom-8 -left-8 h-24 w-24 bg-quaternary" aria-hidden="true" />
         <div>
-          <span className="text-xs font-semibold uppercase tracking-[0.24em] text-warm-terracotta">Productivity Booster</span>
-          <h1 className="mt-1 text-2xl font-black text-warm-ink">Focus Pomodoro</h1>
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Productivity Booster</span>
+          <h1 className="qp-heading mt-1 text-4xl text-foreground">Focus Pomodoro</h1>
         </div>
 
         {/* Task Selection Dropdown */}
         <div className="text-left space-y-2">
-          <label className="text-xs font-bold text-warm-muted uppercase tracking-wider block">Link to active task</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-muted">Link to active task</label>
           <select
             value={selectedTaskId}
             onChange={(e) => setSelectedTaskId(e.target.value)}
             disabled={isRunning}
-            className="w-full rounded-2xl border border-gray-200 bg-warm-canvas py-3 px-4 text-sm outline-none transition focus:border-warm-amber focus:bg-white disabled:opacity-60"
+            className="qp-input w-full px-4 py-3 text-sm disabled:opacity-60"
           >
             <option value="">Choose an active task (Optional)</option>
             {tasks.map((task) => (
@@ -104,12 +106,12 @@ export default function Timer() {
         </div>
 
         {/* Tab Controls for Mode Selection */}
-        <div className="flex gap-2 p-1 bg-warm-canvas rounded-2xl border border-warm-surface">
+        <div className="flex gap-2 rounded-full border-2 border-foreground bg-background p-1.5">
           <button
             type="button"
             onClick={() => switchMode('focus')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
-              mode === 'focus' ? 'bg-white text-warm-ink shadow-warm-sm' : 'text-warm-muted hover:text-warm-ink'
+            className={`flex-1 rounded-full py-2 text-xs font-bold transition ${
+              mode === 'focus' ? 'bg-accent text-white shadow-xs' : 'text-foreground-muted hover:bg-tertiary hover:text-foreground'
             }`}
           >
             Work Session (25m)
@@ -117,8 +119,8 @@ export default function Timer() {
           <button
             type="button"
             onClick={() => switchMode('break')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition ${
-              mode === 'break' ? 'bg-white text-warm-ink shadow-warm-sm' : 'text-warm-muted hover:text-warm-ink'
+            className={`flex-1 rounded-full py-2 text-xs font-bold transition ${
+              mode === 'break' ? 'bg-quaternary text-foreground shadow-xs' : 'text-foreground-muted hover:bg-tertiary hover:text-foreground'
             }`}
           >
             Short Break (5m)
@@ -126,8 +128,8 @@ export default function Timer() {
         </div>
 
         {/* Main Countdown Display */}
-        <div className="relative py-8 flex justify-center">
-          <div className="text-8xl font-black tracking-tighter text-warm-ink tabular-nums select-none">
+        <div className="relative flex justify-center py-8">
+          <div className="select-none rounded-full border-[3px] border-foreground bg-accent-muted px-8 py-10 font-heading text-7xl font-extrabold tracking-tighter text-foreground shadow-[6px_6px_0_#FBBF24] tabular-nums sm:text-8xl">
             {minutes}:{seconds.toString().padStart(2, '0')}
           </div>
         </div>
@@ -137,7 +139,7 @@ export default function Timer() {
           <button
             type="button"
             onClick={resetTimer}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-200 bg-white text-warm-muted hover:bg-warm-canvas transition shadow-warm-sm"
+            className="qp-button-secondary h-12 w-12 p-0 text-foreground-muted"
             aria-label="Reset Timer"
           >
             <ArrowPathIcon className="h-5 w-5" />
@@ -146,8 +148,8 @@ export default function Timer() {
           <button
             type="button"
             onClick={toggleTimer}
-            className={`inline-flex h-14 px-8 items-center justify-center gap-2 rounded-2xl font-bold text-white shadow-md transition ${
-              isRunning ? 'bg-warm-muted hover:scale-[1.01]' : 'bg-warm-terracotta hover:scale-[1.01]'
+            className={`inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-foreground px-8 font-heading font-bold shadow-pop transition ${
+              isRunning ? 'bg-secondary text-white hover:-translate-y-1' : 'bg-accent text-white hover:-translate-y-1'
             }`}
           >
             {isRunning ? (

@@ -11,6 +11,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
+import NotificationInbox from './NotificationInbox';
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const { user, isAdmin, logout } = useAuth();
@@ -35,23 +36,23 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-warm-surface border-r border-warm-surface transition-transform duration-300 ease-in-out w-64 lg:static lg:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r-2 border-foreground bg-surface shadow-[6px_0_0_#F3E8FF] transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       } h-full flex-shrink-0`}
     >
       {/* Sidebar Branding Header */}
-      <div className="p-4 flex items-center justify-between border-b border-warm-surface h-16 flex-shrink-0">
+      <div className="flex h-16 flex-shrink-0 items-center justify-between border-b-2 border-foreground p-4">
         <div className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-slate-950 via-gray-850 to-slate-900 text-xs font-bold text-white shadow-md">
-            <BoltIcon className="h-4 w-4" />
+          <div className="grid h-9 w-9 place-items-center rounded-full border-2 border-foreground bg-accent text-xs text-white shadow-xs">
+            <BoltIcon className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-black text-warm-ink tracking-tight text-sm">TaskFlow</span>
+          <span className="font-heading text-lg tracking-tight text-foreground">TaskFlow</span>
         </div>
 
         {/* Close Button on Mobile Drawer */}
         <button
           onClick={() => setMobileOpen(false)}
-          className="p-2 rounded-xl hover:bg-white transition text-warm-muted lg:hidden"
+          className="rounded-full border-2 border-transparent p-2 text-foreground-muted transition hover:border-foreground hover:bg-tertiary hover:text-foreground lg:hidden"
           aria-label="Close menu"
         >
           <XMarkIcon className="w-5 h-5" />
@@ -59,17 +60,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       </div>
 
       {/* Navigation Options List */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 space-y-2 overflow-y-auto px-3 py-5">
         {links.map((link) => (
           <NavLink
             key={link.name}
             to={link.to}
             onClick={handleLinkClick}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-soft-control text-sm font-semibold transition ${
+              `wiggle-hover flex min-h-12 items-center gap-3 rounded-full border-2 px-3 py-2.5 text-sm font-bold transition ${
                 isActive
-                  ? 'bg-slate-950 text-white shadow-warm-sm'
-                  : 'text-warm-muted hover:bg-white hover:text-warm-ink'
+                  ? 'border-foreground bg-accent text-white shadow-xs'
+                  : 'border-transparent text-foreground-muted hover:border-foreground hover:bg-tertiary hover:text-foreground'
               }`
             }
           >
@@ -80,17 +81,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
 
         {isAdmin && (
           <>
-            <div className="pt-4 pb-2 border-t border-warm-surface">
-              <span className="px-3 text-[10px] font-bold text-warm-muted uppercase tracking-wider">Admin</span>
+            <div className="border-t-2 border-dashed border-border-strong pb-2 pt-5">
+              <span className="px-3 text-[10px] font-semibold text-foreground-muted uppercase tracking-wider">Admin</span>
             </div>
             <NavLink
               to="/admin"
               onClick={handleLinkClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-soft-control text-sm font-semibold transition ${
+                `wiggle-hover flex min-h-12 items-center gap-3 rounded-full border-2 px-3 py-2.5 text-sm font-bold transition ${
                   isActive
-                    ? 'bg-slate-950 text-white shadow-warm-sm'
-                    : 'text-warm-muted hover:bg-white hover:text-warm-ink'
+                    ? 'border-foreground bg-secondary text-white shadow-xs'
+                    : 'border-transparent text-foreground-muted hover:border-foreground hover:bg-accent-muted hover:text-foreground'
                 }`
               }
             >
@@ -101,10 +102,10 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
               to="/admin/productivity"
               onClick={handleLinkClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-soft-control text-sm font-semibold transition ${
+                `wiggle-hover flex min-h-12 items-center gap-3 rounded-full border-2 px-3 py-2.5 text-sm font-bold transition ${
                   isActive
-                    ? 'bg-slate-950 text-white shadow-warm-sm'
-                    : 'text-warm-muted hover:bg-white hover:text-warm-ink'
+                    ? 'border-foreground bg-quaternary text-foreground shadow-xs'
+                    : 'border-transparent text-foreground-muted hover:border-foreground hover:bg-accent-muted hover:text-foreground'
                 }`
               }
             >
@@ -116,19 +117,22 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       </nav>
 
       {/* User Session Footer */}
-      <div className="p-4 border-t border-warm-surface flex-shrink-0">
+      <div className="flex-shrink-0 border-t-2 border-foreground bg-tertiary/25 p-4">
         <div className="flex items-center gap-3 justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-bold text-warm-ink truncate">{user?.name}</p>
-            <p className="text-[10px] text-warm-muted truncate">{user?.email}</p>
+            <p className="text-xs font-semibold text-foreground truncate">{user?.name}</p>
+            <p className="text-[10px] text-foreground-muted truncate">{user?.email}</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="p-2 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-700 transition"
-            aria-label="Logout"
-          >
-            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationInbox />
+            <button
+              onClick={handleLogout}
+              className="rounded-full border-2 border-transparent p-2 text-danger transition hover:border-foreground hover:bg-secondary hover:text-white"
+              aria-label="Logout"
+            >
+              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </aside>

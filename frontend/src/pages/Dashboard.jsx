@@ -71,9 +71,14 @@ function Dashboard() {
       setTasks((prev) => prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)));
     });
 
+    socket.on('task_deleted', (deletedTask) => {
+      setTasks((prev) => prev.filter((task) => task._id !== deletedTask._id));
+    });
+
     return () => {
       socket.off('task_created');
       socket.off('task_updated');
+      socket.off('task_deleted');
     };
   }, [socket, user, isAdmin]);
 
@@ -214,29 +219,33 @@ function Dashboard() {
       title: 'Total Tasks',
       value: stats.total,
       Icon: Bars3BottomLeftIcon,
-      iconClass: 'from-slate-950 via-gray-850 to-slate-900',
-      textClass: 'text-slate-700'
+      iconClass: 'bg-accent text-white',
+      textClass: 'text-foreground',
+      cardClass: 'shadow-[6px_6px_0_#F3E8FF]'
     },
     {
       title: 'Completed',
       value: stats.completed,
       Icon: CheckCircleIcon,
-      iconClass: 'from-emerald-500 to-green-600',
-      textClass: 'text-emerald-700'
+      iconClass: 'bg-success text-white',
+      textClass: 'text-success',
+      cardClass: 'shadow-[6px_6px_0_#D1FAE5]'
     },
     {
       title: 'In Progress',
       value: stats.inProgress,
       Icon: ClockIcon,
-      iconClass: 'from-amber-500 to-orange-500',
-      textClass: 'text-amber-700'
+      iconClass: 'bg-warning text-white',
+      textClass: 'text-warning',
+      cardClass: 'shadow-[6px_6px_0_#FEF3C7]'
     },
     {
       title: 'Pending',
       value: stats.pending,
       Icon: ExclamationTriangleIcon,
-      iconClass: 'from-rose-500 to-red-600',
-      textClass: 'text-rose-700'
+      iconClass: 'bg-danger text-white',
+      textClass: 'text-danger',
+      cardClass: 'shadow-[6px_6px_0_#FCE7F3]'
     }
   ];
 
@@ -249,49 +258,51 @@ function Dashboard() {
   return (
     <div className="dashboard-shell min-h-screen">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-[0.5rem] bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 p-6 text-white shadow-2xl shadow-slate-950/15 sm:p-8">
+        <section className="relative overflow-hidden rounded-lg border-2 border-foreground bg-accent p-6 text-white shadow-[7px_7px_0_#FBBF24] sm:p-8">
+          <span className="shape shape-circle -right-8 -top-12 h-36 w-36 bg-secondary" aria-hidden="true" />
+          <span className="shape shape-square -bottom-8 right-52 hidden h-20 w-20 bg-quaternary sm:block" aria-hidden="true" />
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Workspace overview</p>
-              <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Welcome back, {user?.name}!</h1>
-              <p className="mt-2 max-w-2xl text-sm text-white/80 sm:text-base">
-                {currentDate} · Manage your task flow with clarity, speed, and a premium dashboard experience.
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/75">Workspace overview</p>
+              <h1 className="qp-heading mt-2 text-4xl tracking-tight text-white sm:text-5xl">Hey {user?.name}, let&apos;s make progress!</h1>
+              <p className="mt-2 max-w-2xl text-sm font-medium text-white/75 sm:text-base">
+                {currentDate} · Your tasks are lined up and ready to move.
               </p>
             </div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white/90 backdrop-blur">
+            <div className="relative rounded-full border-2 border-foreground bg-tertiary px-4 py-3 text-sm font-bold text-foreground shadow-xs">
               {isAdmin ? 'Admin access enabled' : 'User workspace'}
             </div>
           </div>
         </section>
 
         <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {statCards.map(({ title, value, Icon, iconClass, textClass }) => (
-            <article key={title} className="group rounded-[0.5rem] border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
-              <div className={`inline-flex rounded-2xl bg-gradient-to-br ${iconClass} p-3 text-white shadow-lg shadow-slate-900/10 transition group-hover:scale-105`}>
-                <Icon className="h-5 w-5" />
+          {statCards.map(({ title, value, Icon, iconClass, textClass, cardClass }, index) => (
+            <article key={title} className={`qp-card qp-card-interactive group p-5 ${cardClass} ${index % 2 ? 'sm:translate-y-2' : ''}`}>
+              <div className={`inline-flex rounded-full border-2 border-foreground ${iconClass} p-3 shadow-xs`}>
+                <Icon className="h-5 w-5" strokeWidth={2.5} />
               </div>
-              <p className="mt-4 text-sm font-medium text-gray-500">{title}</p>
-              <p className={`mt-1 text-3xl font-black ${textClass}`}>{value}</p>
+              <p className="mt-4 text-sm font-medium text-foreground-muted">{title}</p>
+              <p className={`mt-1 font-heading text-4xl ${textClass}`}>{value}</p>
             </article>
           ))}
         </section>
 
-        <section className="mt-6 rounded-[0.5rem] border border-white/70 bg-white/90 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-6">
+        <section className="qp-card mt-8 p-4 shadow-[6px_6px_0_#F3E8FF] sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row items-center">
             <div className="relative flex-1 w-full">
-              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search tasks..."
-                className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-11 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                className="qp-input w-full py-3 pl-11 pr-11 text-sm"
               />
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-500 transition hover:bg-gray-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm p-1 text-foreground-muted transition hover:bg-accent-muted hover:text-accent"
                   aria-label="Clear search"
                 >
                   <XMarkIcon className="h-4 w-4" />
@@ -302,10 +313,10 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setSmartSuggest(prev => !prev)}
-              className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-2xl border px-5 py-3 text-sm font-semibold shadow-sm transition whitespace-nowrap ${
+              className={`inline-flex min-h-12 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-2 border-foreground px-5 py-3 text-sm font-bold shadow-xs transition sm:w-auto ${
                 smartSuggest
-                  ? 'bg-indigo-50 border-indigo-200 text-indigo-700 font-bold ring-2 ring-indigo-500/10'
-                  : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                  ? 'bg-tertiary text-foreground'
+                  : 'bg-surface text-foreground-muted hover:bg-accent-muted hover:text-foreground'
               }`}
             >
               <span>✨ Smart Suggest</span>
@@ -320,28 +331,28 @@ function Dashboard() {
                 key={item}
                 type="button"
                 onClick={() => setFilter(item)}
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                   filter === item
-                    ? 'bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 text-white shadow-lg shadow-slate-950/20'
-                    : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50'
+                    ? 'border-2 border-foreground bg-accent text-white shadow-xs'
+                    : 'border-2 border-foreground bg-surface text-foreground-muted hover:bg-tertiary hover:text-foreground'
                 }`}
               >
                 <span>{item === 'all' ? 'All' : item.replace('-', ' ')}</span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${filter === item ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${filter === item ? 'bg-white/20 text-white' : 'bg-background text-foreground-muted'}`}>
                   {filterCounts[item]}
                 </span>
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-gray-200">
+          <div className="flex items-center gap-1 rounded-full border-2 border-foreground bg-surface p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode('board')}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+              className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'board'
-                  ? 'bg-slate-950 text-white shadow-sm'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-accent text-white'
+                  : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
               }`}
             >
               <Squares2X2Icon className="h-4 w-4" />
@@ -350,10 +361,10 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+              className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'list'
-                  ? 'bg-slate-950 text-white shadow-sm'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-accent text-white'
+                  : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
               }`}
             >
               <ListBulletIcon className="h-4 w-4" />
@@ -366,24 +377,24 @@ function Dashboard() {
           {loading ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="h-56 animate-pulse rounded-3xl bg-white/80 p-5 shadow-sm">
-                  <div className="mb-4 h-4 w-24 rounded-full bg-gray-200" />
-                  <div className="mb-3 h-6 w-3/4 rounded-full bg-gray-200" />
-                  <div className="mb-2 h-4 w-full rounded-full bg-gray-100" />
-                  <div className="mb-2 h-4 w-5/6 rounded-full bg-gray-100" />
-                  <div className="mt-8 h-10 w-full rounded-2xl bg-gray-100" />
+                <div key={index} className="h-56 animate-pulse rounded-md border border-border bg-surface p-5 shadow-xs">
+                  <div className="mb-4 h-4 w-24 rounded-full bg-border" />
+                  <div className="mb-3 h-6 w-3/4 rounded-full bg-border" />
+                  <div className="mb-2 h-4 w-full rounded-full bg-background" />
+                  <div className="mb-2 h-4 w-5/6 rounded-full bg-background" />
+                  <div className="mt-8 h-10 w-full rounded-sm bg-background" />
                 </div>
               ))}
             </div>
           ) : filteredTasks.length === 0 ? (
-            <div className="grid place-items-center rounded-[0.5rem] border border-dashed border-gray-300 bg-white p-12 text-center shadow-sm sm:p-16">
-              <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-slate-100 text-slate-600">
-                <ClipboardDocumentCheckIcon className="h-12 w-12" />
+            <div className="grid place-items-center rounded-lg border border-dashed border-border-strong bg-surface p-12 text-center shadow-xs sm:p-16">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-md bg-accent-muted text-accent">
+                <ClipboardDocumentCheckIcon className="h-10 w-10" strokeWidth={1.5} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">
+              <h3 className="qp-heading text-3xl text-foreground">
                 {search ? 'No tasks match your search' : 'No tasks yet. Create your first one!'}
               </h3>
-              <p className="mt-2 max-w-md text-sm text-gray-500">
+              <p className="mt-2 max-w-md text-sm text-foreground-muted">
                 {search
                   ? 'Try a different keyword or clear the search to view all tasks.'
                   : 'Build momentum by adding a task and letting the dashboard do the rest.'}
@@ -392,9 +403,9 @@ function Dashboard() {
           ) : viewMode === 'board' ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {Object.entries({
-                pending: { title: 'To Do', border: 'border-t-slate-400', bg: 'bg-slate-50/50' },
-                'in-progress': { title: 'In Progress', border: 'border-t-amber-400', bg: 'bg-amber-50/10' },
-                completed: { title: 'Completed', border: 'border-t-emerald-400', bg: 'bg-emerald-50/10' }
+                pending: { title: 'To Do', border: 'border-t-foreground-muted', bg: 'bg-background/60' },
+                'in-progress': { title: 'In Progress', border: 'border-t-warning', bg: 'bg-amber-50/30' },
+                completed: { title: 'Completed', border: 'border-t-success', bg: 'bg-emerald-50/30' }
               }).map(([statusKey, col]) => {
                 const columnTasks = filteredTasks.filter((task) => task.status === statusKey);
                 return (
@@ -402,11 +413,11 @@ function Dashboard() {
                     key={statusKey}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, statusKey)}
-                    className={`flex flex-col rounded-2xl border border-gray-250 p-4 border-t-4 ${col.border} ${col.bg} min-h-[450px]`}
+                    className={`flex min-h-[450px] flex-col rounded-lg border-2 border-foreground border-t-[10px] p-4 shadow-[5px_5px_0_#E2E8F0] ${col.border} ${col.bg}`}
                   >
-                    <h3 className="mb-4 flex items-center justify-between font-bold text-gray-700">
+                    <h3 className="mb-4 flex items-center justify-between font-semibold text-foreground">
                       <span>{col.title}</span>
-                      <span className="rounded-full bg-slate-200/70 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+                      <span className="rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold text-foreground-muted">
                         {columnTasks.length}
                       </span>
                     </h3>
@@ -435,7 +446,7 @@ function Dashboard() {
                         ))}
                       </AnimatePresence>
                       {columnTasks.length === 0 && (
-                        <div className="flex h-24 items-center justify-center rounded-2xl border border-dashed border-gray-200 text-xs text-gray-400">
+                          <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-border-strong bg-white/60 text-xs font-semibold text-foreground-muted">
                           Drop tasks here
                         </div>
                       )}
@@ -453,8 +464,8 @@ function Dashboard() {
                     layout
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                   >
                     <TaskCard task={task} onEdit={openEdit} onDelete={handleDeleteTask} />
                   </motion.div>
@@ -467,10 +478,10 @@ function Dashboard() {
         <button
           type="button"
           onClick={openCreate}
-          className="animate-pulse-soft sticky bottom-6 left-full z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-slate-950 via-gray-850 to-slate-900 text-white shadow-2xl shadow-slate-950/25 transition hover:scale-105"
+          className="animate-pulse-soft sticky bottom-6 left-full z-50 inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-foreground bg-accent text-white shadow-pop transition hover:bg-secondary"
           aria-label="Create task"
         >
-          <PlusIcon className="h-7 w-7" />
+          <PlusIcon className="h-6 w-6" strokeWidth={2.5} />
         </button>
       </main>
 

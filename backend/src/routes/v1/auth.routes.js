@@ -1,7 +1,7 @@
 const express = require('express');
-const { register, login, getMe } = require('../../controllers/auth.controller');
+const { register, login, getMe, updateMe } = require('../../controllers/auth.controller');
 const authenticate = require('../../middleware/auth');
-const { registerValidation, loginValidation } = require('../../validators/auth.validator');
+const { registerValidation, loginValidation, updateProfileValidation } = require('../../validators/auth.validator');
 
 const router = express.Router();
 
@@ -102,5 +102,6 @@ router.post('/login', loginValidation, login);
  *         description: Server error
  */
 router.get('/me', authenticate, getMe);
+router.put('/me', authenticate, updateProfileValidation, updateMe);
 
 module.exports = router;

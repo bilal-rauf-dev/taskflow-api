@@ -9,18 +9,19 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <SocketProvider>
           <App />
           <Toaster
-          position="top-right"
-          toastOptions={{
+            position="top-right"
+            toastOptions={{
             success: {
               style: {
                 background: '#ecfdf5',
                 color: '#065f46',
-                border: '1px solid #a7f3d0'
+                border: '2px solid #1E293B',
+                boxShadow: '4px 4px 0 #1E293B'
               },
               iconTheme: {
                 primary: '#059669',
@@ -31,7 +32,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               style: {
                 background: '#fef2f2',
                 color: '#991b1b',
-                border: '1px solid #fecaca'
+                border: '2px solid #1E293B',
+                boxShadow: '4px 4px 0 #1E293B'
               },
               iconTheme: {
                 primary: '#dc2626',
@@ -39,9 +41,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               }
             },
             style: {
-              borderRadius: '12px',
-              background: '#111827',
-              color: '#f9fafb'
+              borderRadius: '16px',
+              border: '2px solid #1E293B',
+              background: '#8B5CF6',
+              color: '#FFFFFF',
+              fontFamily: 'Plus Jakarta Sans, system-ui, sans-serif',
+              fontWeight: 600,
+              boxShadow: '4px 4px 0 #1E293B'
             }
           }}
         />

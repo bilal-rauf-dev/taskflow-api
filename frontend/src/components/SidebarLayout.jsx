@@ -7,18 +7,18 @@ export default function SidebarLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-screen bg-warm-canvas overflow-hidden flex-col lg:flex-row">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-background lg:flex-row">
       {/* Mobile Top Bar Header */}
-      <header className="flex items-center justify-between border-b border-warm-surface bg-white/80 p-4 backdrop-blur-md lg:hidden h-16 w-full flex-shrink-0">
+      <header className="flex h-16 w-full flex-shrink-0 items-center justify-between border-b-2 border-foreground bg-surface p-4 lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-slate-950 via-gray-850 to-slate-900 text-xs font-bold text-white">
-            <BoltIcon className="h-4 w-4" />
+          <div className="grid h-9 w-9 place-items-center rounded-full border-2 border-foreground bg-accent text-xs text-white shadow-xs">
+            <BoltIcon className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-black text-warm-ink tracking-tight text-sm">TaskFlow</span>
+          <span className="font-heading text-lg tracking-tight text-foreground">TaskFlow</span>
         </div>
         <button
           onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-xl hover:bg-warm-surface text-warm-muted transition"
+          className="rounded-full border-2 border-foreground bg-tertiary p-2 text-foreground shadow-xs transition hover:-translate-y-0.5"
           aria-label="Open sidebar menu"
         >
           <Bars3Icon className="w-6 h-6" />
@@ -33,13 +33,13 @@ export default function SidebarLayout() {
         {/* Dynamic Mobile click-out backdrop overlay */}
         {mobileOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-foreground/45 backdrop-blur-[2px] lg:hidden"
             onClick={() => setMobileOpen(false)}
           />
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-warm-canvas relative focus:outline-none h-full">
+        <main className="relative h-full flex-1 overflow-y-auto bg-background focus:outline-none">
           <Outlet />
         </main>
       </div>

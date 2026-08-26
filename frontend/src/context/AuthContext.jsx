@@ -3,25 +3,55 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
+const AUTH_KEYS = ['token', 'user'];
+
+const getSessionStorage = () => {
+  const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
+  const token = storage.getItem('token');
+  const serializedUser = storage.getItem('user');
+
+  if (!token || !serializedUser) {
+    return { token: null, user: null };
+  }
+
+  try {
+    return { token, user: JSON.parse(serializedUser) };
+  } catch {
+    AUTH_KEYS.forEach((key) => storage.removeItem(key));
+    return { token: null, user: null };
+  }
+};
+
+const clearAuthStorage = () => {
+  [localStorage, sessionStorage].forEach((storage) => {
+    AUTH_KEYS.forEach((key) => storage.removeItem(key));
+  });
+};
+
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [session, setSession] = useState(getSessionStorage);
+  const { token, user } = session;
 
-  const login = (authToken, authUser) => {
-    setToken(authToken);
-    setUser(authUser);
-    localStorage.setItem('token', authToken);
-    localStorage.setItem('user', JSON.stringify(authUser));
+  const saveSession = (authToken, authUser, remember) => {
+    const storage = remember ? localStorage : sessionStorage;
+    clearAuthStorage();
+    storage.setItem('token', authToken);
+    storage.setItem('user', JSON.stringify(authUser));
+    setSession({ token: authToken, user: authUser });
+  };
+
+  const login = (authToken, authUser, remember = false) => {
+    saveSession(authToken, authUser, remember);
+  };
+
+  const updateSession = (authToken, authUser) => {
+    saveSession(authToken, authUser, localStorage.getItem('token') !== null);
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.clear();
+    clearAuthStorage();
+    setSession({ token: null, user: null });
     navigate('/login', { replace: true });
   };
 
@@ -30,6 +60,7 @@ export function AuthProvider({ children }) {
       user,
       token,
       login,
+      updateSession,
       logout,
       isAuthenticated: Boolean(token),
       isAdmin: user?.role === 'admin'

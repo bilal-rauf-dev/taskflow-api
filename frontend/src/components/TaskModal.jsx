@@ -7,9 +7,9 @@ import { useSocket } from '../context/SocketContext';
 import toast from 'react-hot-toast';
 
 const statusOptions = [
-  { label: 'Pending', value: 'pending', active: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-400' },
-  { label: 'In Progress', value: 'in-progress', active: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-500' },
-  { label: 'Completed', value: 'completed', active: 'bg-green-100 text-green-700 border-green-200', dot: 'bg-green-500' }
+  { label: 'Pending', value: 'pending', active: 'bg-background text-foreground-muted border-border-strong', dot: 'bg-foreground-muted' },
+  { label: 'In Progress', value: 'in-progress', active: 'bg-amber-50 text-warning border-amber-200', dot: 'bg-warning' },
+  { label: 'Completed', value: 'completed', active: 'bg-emerald-50 text-success border-emerald-200', dot: 'bg-success' }
 ];
 
 const priorityOptions = [
@@ -66,45 +66,45 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
     <Transition show={isOpen} as={Dialog} onClose={onClose} className="relative z-50">
       <Transition.Child
         as="div"
-        enter="transition-opacity duration-300"
+        enter="transition-opacity duration-300 ease-out"
         enterFrom="opacity-0"
         enterTo="opacity-100"
         leave="transition-opacity duration-200"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="fixed inset-0 bg-slate-950/55 backdrop-blur-sm"
+        className="fixed inset-0 bg-foreground/45 backdrop-blur-[2px]"
       />
 
       <div className="fixed inset-0 flex justify-end">
         <Transition.Child
           as={Dialog.Panel}
-          enter="transform transition duration-300 ease-out"
+          enter="transform transition duration-400 ease-out"
           enterFrom="translate-x-full"
           enterTo="translate-x-0"
           leave="transform transition duration-200 ease-in"
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
-          className="flex h-full w-full max-w-full flex-col bg-white shadow-2xl sm:max-w-xl"
+          className="flex h-full w-full max-w-full flex-col border-l-2 border-foreground bg-surface shadow-[-8px_0_0_#FBBF24] sm:max-w-xl"
         >
-          <div className="flex items-center justify-between bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 px-5 py-4 text-white sm:px-6">
+          <div className="flex items-center justify-between border-b-2 border-foreground bg-accent px-5 py-4 text-white sm:px-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">Task Editor</p>
-              <Dialog.Title className="mt-1 text-xl font-bold">{initialTask ? 'Edit Task' : 'New Task'}</Dialog.Title>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Task Editor</p>
+              <Dialog.Title className="qp-heading mt-1 text-3xl">{initialTask ? 'Edit Task' : 'New Task'}</Dialog.Title>
             </div>
-            <button type="button" onClick={onClose} className="rounded-full bg-white/10 p-2 transition hover:bg-white/20">
-              <XMarkIcon className="h-5 w-5" />
+            <button type="button" onClick={onClose} className="rounded-full border-2 border-foreground bg-tertiary p-2 text-foreground shadow-xs transition hover:-translate-y-0.5">
+              <XMarkIcon className="h-5 w-5" strokeWidth={2.5} />
             </button>
           </div>
 
           {initialTask && (
-            <div className="flex border-b border-gray-150 bg-slate-50 px-5 sm:px-6">
+            <div className="flex border-b-2 border-foreground bg-background px-5 sm:px-6">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
                 className={`flex-1 pb-3 pt-3 text-center text-xs font-bold transition border-b-2 ${
                   activeTab === 'details'
-                    ? 'border-slate-950 text-slate-950 font-extrabold'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'border-accent text-accent font-semibold'
+                    : 'border-transparent text-foreground-muted hover:text-foreground'
                 }`}
               >
                 Details
@@ -114,8 +114,8 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 onClick={() => setActiveTab('comments')}
                 className={`flex-1 pb-3 pt-3 text-center text-xs font-bold transition border-b-2 ${
                   activeTab === 'comments'
-                    ? 'border-slate-950 text-slate-950 font-extrabold'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'border-accent text-accent font-semibold'
+                    : 'border-transparent text-foreground-muted hover:text-foreground'
                 }`}
               >
                 Comments
@@ -125,8 +125,8 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 onClick={() => setActiveTab('history')}
                 className={`flex-1 pb-3 pt-3 text-center text-xs font-bold transition border-b-2 ${
                   activeTab === 'history'
-                    ? 'border-slate-950 text-slate-950 font-extrabold'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'border-accent text-accent font-semibold'
+                    : 'border-transparent text-foreground-muted hover:text-foreground'
                 }`}
               >
                 History
@@ -138,43 +138,43 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
             {activeTab === 'details' ? (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-700">Title</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Title</span>
                   <div className="relative">
-                    <PencilSquareIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <PencilSquareIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
                     <input
                       type="text"
                       name="title"
                       required
                       value={form.title}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                      className="qp-input w-full py-3 pl-11 pr-4 text-sm"
                     />
                   </div>
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-700">Description</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Description</span>
                   <textarea
                     name="description"
                     rows="4"
                     value={form.description}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                    className="qp-input w-full px-4 py-3 text-sm"
                   />
                 </label>
 
                 <div>
-                  <span className="mb-2 block text-sm font-medium text-gray-700">Priority</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Priority</span>
                   <div className="grid grid-cols-3 gap-3">
                     {priorityOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, priority: option.value }))}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition ${
+                        className={`flex items-center justify-center gap-2 rounded-full border-2 border-foreground px-3 py-3 text-sm font-bold transition ${
                           form.priority === option.value
                             ? `${option.active} shadow-sm`
-                            : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                            : 'border-border bg-surface text-foreground-muted hover:border-border-strong hover:text-foreground'
                         }`}
                       >
                         <span className={`h-2.5 w-2.5 rounded-full ${option.dot}`} />
@@ -185,17 +185,17 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </div>
 
                 <div>
-                  <span className="mb-2 block text-sm font-medium text-gray-700">Status</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Status</span>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {statusOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, status: option.value }))}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition ${
+                        className={`flex items-center justify-center gap-2 rounded-full border-2 border-foreground px-3 py-3 text-sm font-bold transition ${
                           form.status === option.value
                             ? `${option.active} shadow-sm`
-                            : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                            : 'border-border bg-surface text-foreground-muted hover:border-border-strong hover:text-foreground'
                         }`}
                       >
                         <span className={`h-2.5 w-2.5 rounded-full ${option.dot}`} />
@@ -206,15 +206,15 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </div>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-700">Due Date</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Due Date</span>
                   <div className="relative">
-                    <CalendarDaysIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <CalendarDaysIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
                     <input
                       type="date"
                       name="dueDate"
                       value={form.dueDate}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                      className="qp-input w-full py-3 pl-11 pr-4 text-sm"
                     />
                   </div>
                 </label>
@@ -226,12 +226,12 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
             )}
           </div>
 
-          <div className="border-t border-gray-100 bg-white px-5 py-4 sm:px-6">
+          <div className="border-t-2 border-foreground bg-tertiary/20 px-5 py-4 sm:px-6">
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+                className="qp-button-secondary flex-1 px-4 py-3 text-sm"
               >
                 {activeTab === 'details' ? 'Cancel' : 'Close'}
               </button>
@@ -240,7 +240,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                   type="submit"
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="qp-button flex-1 gap-2 px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {loading && <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />}
                   {loading ? 'Saving...' : 'Save'}
@@ -308,19 +308,19 @@ function CommentsSection({ taskId }) {
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <div className="flex-1 overflow-y-auto space-y-3 rounded-2xl bg-slate-50 p-4 border border-slate-100 max-h-[300px]">
+      <div className="flex-1 overflow-y-auto space-y-3 rounded-md border border-border bg-background p-4 max-h-[300px]">
         {comments.length === 0 ? (
-          <p className="text-center text-xs text-slate-400 py-6">No discussion comments yet. Start the conversation!</p>
+          <p className="py-6 text-center text-xs text-foreground-muted">No discussion comments yet. Start the conversation!</p>
         ) : (
           comments.map((comment) => (
-            <div key={comment._id} className="text-sm p-3 bg-white rounded-xl shadow-sm border border-slate-150">
+            <div key={comment._id} className="rounded-sm border border-border bg-surface p-3 text-sm shadow-xs">
               <div className="flex justify-between items-center mb-1">
-                <span className="font-bold text-xs text-indigo-600">{comment.author?.name}</span>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-xs font-semibold text-accent">{comment.author?.name}</span>
+                <span className="text-[10px] text-foreground-muted">
                   {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <p className="text-slate-700 text-xs font-medium">{comment.content}</p>
+              <p className="text-xs leading-5 text-foreground">{comment.content}</p>
             </div>
           ))
         )}
@@ -331,12 +331,12 @@ function CommentsSection({ taskId }) {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Add a comment..."
-          className="flex-1 rounded-xl border border-slate-200 bg-slate-50 py-3.5 px-4 text-xs font-medium outline-none focus:border-indigo-500 focus:bg-white"
+          className="qp-input flex-1 px-4 py-3.5 text-xs"
         />
         <button
           type="submit"
           disabled={loading}
-          className="rounded-xl bg-slate-950 px-4 text-xs font-bold text-white hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+          className="qp-button px-4 text-xs disabled:opacity-50"
         >
           Post
         </button>
@@ -378,9 +378,9 @@ function HistorySection({ taskId }) {
   };
 
   return (
-    <div className="space-y-4 overflow-y-auto max-h-[350px] p-4 bg-slate-50 rounded-2xl border border-slate-100">
+    <div className="max-h-[350px] space-y-4 overflow-y-auto rounded-md border border-border bg-background p-4">
       {logs.length === 0 ? (
-        <p className="text-center text-xs text-slate-400 py-6">No actions logged yet.</p>
+        <p className="py-6 text-center text-xs text-foreground-muted">No actions logged yet.</p>
       ) : (
         <div className="flow-root">
           <ul className="-mb-8">
@@ -388,20 +388,20 @@ function HistorySection({ taskId }) {
               <li key={log._id}>
                 <div className="relative pb-8">
                   {logIdx !== logs.length - 1 ? (
-                    <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-slate-200" aria-hidden="true" />
+                    <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-border-strong" aria-hidden="true" />
                   ) : null}
                   <div className="relative flex space-x-3">
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 ring-8 ring-slate-50 text-indigo-600 font-bold text-xs">
+                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-accent-muted text-xs font-semibold text-accent">
                       {log.user?.name ? log.user.name[0].toUpperCase() : 'U'}
                     </div>
                     <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                       <div>
-                        <p className="text-xs text-slate-700">
-                          <span className="font-bold text-slate-900">{log.user?.name}</span>{' '}
+                        <p className="text-xs leading-5 text-foreground-muted">
+                          <span className="font-semibold text-foreground">{log.user?.name}</span>{' '}
                           {formatDetail(log)}
                         </p>
                       </div>
-                      <div className="whitespace-nowrap text-right text-[10px] text-slate-400">
+                      <div className="whitespace-nowrap text-right text-[10px] text-foreground-muted">
                         {new Date(log.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                       </div>
                     </div>

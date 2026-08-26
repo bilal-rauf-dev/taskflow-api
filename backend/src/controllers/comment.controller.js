@@ -2,7 +2,8 @@ const Comment = require('../models/Comment');
 const Task = require('../models/Task');
 const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
-const { getIO } = require('../config/socket');
+const { getIO, userRoom, taskRoom } = require('../config/socket');
+const { canAccessTask } = require('../utils/taskAccess');
 
 // Add comment to a task
 const addComment = async (req, res, next) => {
@@ -16,6 +17,14 @@ const addComment = async (req, res, next) => {
       return res.status(404).json({
         success: false,
         message: 'Task not found'
+      });
+    }
+
+    if (!canAccessTask(task, req.user)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden',
+        errors: ['You are not allowed to comment on this task']
       });
     }
 
@@ -51,7 +60,7 @@ const addComment = async (req, res, next) => {
       // Push real-time notification to the owner
       try {
         const io = getIO();
-        io.to(task.owner.toString()).emit('new_notification', notification);
+        io.to(userRoom(task.owner)).emit('new_notification', notification);
       } catch (ioErr) {
         console.error('Socket notification emit failed:', ioErr.message);
       }
@@ -60,7 +69,7 @@ const addComment = async (req, res, next) => {
     // 3. Emit real-time comment to other users in the task room
     try {
       const io = getIO();
-      io.to(`task_${taskId}`).emit('comment_received', comment);
+      io.to(taskRoom(taskId)).emit('comment_received', comment);
     } catch (ioErr) {
       console.error('Socket comment emit failed:', ioErr.message);
     }
@@ -79,6 +88,22 @@ const addComment = async (req, res, next) => {
 const getComments = async (req, res, next) => {
   try {
     const { id: taskId } = req.params;
+
+    const task = await Task.findById(taskId).select('owner assignees');
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found'
+      });
+    }
+
+    if (!canAccessTask(task, req.user)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden',
+        errors: ['You are not allowed to view comments on this task']
+      });
+    }
 
     const comments = await Comment.find({ task: taskId })
       .populate('author', 'name email')

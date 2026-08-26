@@ -21,9 +21,9 @@ const priorityBorders = {
 };
 
 const statusStyles = {
-  pending: 'bg-slate-100 text-slate-700',
-  'in-progress': 'bg-slate-100 text-slate-700',
-  completed: 'bg-green-100 text-green-700'
+  pending: 'bg-tertiary/35 text-foreground',
+  'in-progress': 'bg-accent-muted text-accent',
+  completed: 'bg-emerald-100 text-emerald-700'
 };
 
 function TaskCard({ task, onEdit, onDelete, draggable, onDragStart, onKeyDown }) {
@@ -38,37 +38,37 @@ function TaskCard({ task, onEdit, onDelete, draggable, onDragStart, onKeyDown })
       onKeyDown={onKeyDown}
       draggable={draggable}
       onDragStart={onDragStart}
-      className={`animate-rise w-full rounded-2xl border border-gray-200 border-l-4 bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none ${priorityBorders[task.priority]} ${draggable ? 'cursor-grab active:cursor-grabbing' : ''}`}
+      className={`animate-rise w-full rounded-md border-2 border-foreground border-l-[8px] bg-surface p-5 shadow-[4px_4px_0_#E2E8F0] transition duration-300 hover:-translate-y-1 hover:rotate-[-0.4deg] hover:shadow-[6px_6px_0_#F3E8FF] focus-visible:outline-none ${priorityBorders[task.priority]} ${draggable ? 'cursor-grab active:cursor-grabbing' : ''}`}
     >
       <div className="mb-2 flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="line-clamp-1 text-lg font-semibold text-gray-900">{task.title}</h3>
+          <h3 className="line-clamp-1 font-heading text-xl font-extrabold text-foreground">{task.title}</h3>
           {dueDate && (
-            <p className={`mt-1 flex items-center gap-1 text-xs font-medium ${isOverdue ? 'text-red-600' : 'text-gray-500'}`}>
+            <p className={`mt-1 flex items-center gap-1 text-xs font-medium ${isOverdue ? 'text-danger' : 'text-foreground-muted'}`}>
               {isOverdue ? (
-                <ExclamationTriangleIcon className="h-4 w-4" />
+                <ExclamationTriangleIcon className="h-4 w-4" strokeWidth={2.5} />
               ) : (
-                <CalendarDaysIcon className="h-4 w-4" />
+                <CalendarDaysIcon className="h-4 w-4" strokeWidth={2.5} />
               )}
               Due: {dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           )}
         </div>
-        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[task.status]}`}>
-          {task.status}
+        <span className={`rounded-full border border-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${statusStyles[task.status]}`}>
+          {task.status.replace('-', ' ')}
         </span>
       </div>
 
-      <p className="mb-4 min-h-12 text-sm text-gray-600">{task.description || 'No description provided.'}</p>
+      <p className="mb-4 min-h-12 text-sm leading-6 text-foreground-muted">{task.description || 'No description provided.'}</p>
 
       <div className="mb-5 flex items-center justify-between">
-        <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${priorityStyles[task.priority]}`}>
-          <FlagIcon className="h-3.5 w-3.5" />
+        <span className={`inline-flex items-center gap-1 rounded-full border border-foreground px-3 py-1 text-xs font-semibold ${priorityStyles[task.priority]}`}>
+          <FlagIcon className="h-3.5 w-3.5" strokeWidth={2.5} />
           {task.priority} priority
         </span>
         {task.status === 'completed' && (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600">
-            <CheckCircleIcon className="h-4 w-4" />
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-success">
+            <CheckCircleIcon className="h-4 w-4" strokeWidth={2.5} />
             Done
           </span>
         )}
@@ -78,17 +78,17 @@ function TaskCard({ task, onEdit, onDelete, draggable, onDragStart, onKeyDown })
         <button
           type="button"
           onClick={() => onEdit(task)}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          className="qp-button-secondary flex-1 gap-2 px-3 py-2 text-sm"
         >
-          <PencilSquareIcon className="h-4 w-4" />
+          <PencilSquareIcon className="h-4 w-4" strokeWidth={2.5} />
           Edit
         </button>
         <button
           type="button"
           onClick={() => onDelete(task._id)}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+          className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full border-2 border-foreground bg-white px-3 py-2 font-heading text-sm font-bold text-danger transition hover:bg-secondary hover:text-white"
         >
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon className="h-4 w-4" strokeWidth={2.5} />
           Delete
         </button>
       </div>

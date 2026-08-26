@@ -36,57 +36,59 @@ export default function AdminProductivity() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-2xl bg-gradient-to-r from-slate-950 via-gray-850 to-slate-900 p-6 text-white shadow-2xl sm:p-8">
+        <section className="relative overflow-hidden rounded-lg border-2 border-foreground bg-quaternary p-6 shadow-[7px_7px_0_#1E293B] sm:p-8">
+          <span className="shape shape-square -right-4 -top-8 h-24 w-24 bg-secondary" aria-hidden="true" />
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-400">Admin Command Center</p>
-            <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Productivity Velocity</h1>
-            <p className="mt-2 text-sm text-white/80 sm:text-base">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Admin Command Center</p>
+            <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Momentum, by the numbers.</h1>
+            <p className="mt-2 text-sm text-foreground-muted sm:text-base">
               Monitor team performance, task completions, and workflow velocity curves over calendar weeks.
             </p>
           </div>
         </section>
 
         <section className="mt-6 grid gap-6 sm:grid-cols-2">
-          <div className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Task Completions</span>
-            <p className="mt-2 text-4xl font-black text-indigo-600">{stats.totalCompletions}</p>
+          <div className="qp-card qp-card-interactive p-6">
+            <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Total Task Completions</span>
+            <p className="qp-heading mt-2 text-5xl text-accent">{stats.totalCompletions}</p>
           </div>
-          <div className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Average Completions / Week</span>
-            <p className="mt-2 text-4xl font-black text-emerald-600">{stats.weeklyAvg}</p>
+          <div className="qp-card qp-card-interactive p-6">
+            <span className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">Average Completions / Week</span>
+            <p className="qp-heading mt-2 text-5xl text-success">{stats.weeklyAvg}</p>
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">Completed Tasks Timeline</h3>
+        <section className="qp-card mt-6 p-6 shadow-sm">
+          <h3 className="qp-heading mb-6 text-3xl text-foreground">Completed Tasks Timeline</h3>
           {loading ? (
             <div className="flex h-72 items-center justify-center">
-              <span className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
             </div>
           ) : data.length === 0 ? (
-            <div className="flex h-72 items-center justify-center text-sm text-slate-400">
+            <div className="flex h-72 items-center justify-center text-sm text-foreground-muted">
               No task completion data recorded yet. Mark tasks as completed to populate charts!
             </div>
           ) : (
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E7E6E2" vertical={false} />
                   <XAxis dataKey="week" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1e293b',
-                      borderRadius: '12px',
-                      color: '#fff',
-                      border: 'none',
+                      background: '#FFFFFF',
+                      borderRadius: '16px',
+                      color: '#1E293B',
+                      border: '2px solid #1E293B',
+                      boxShadow: '4px 4px 0 #F472B6',
                       fontSize: '12px'
                     }}
                   />
-                  <ReferenceLine y={stats.weeklyAvg} stroke="#059669" strokeDasharray="3 3" label={{ value: 'Avg', fill: '#059669', fontSize: 10, position: 'insideTopLeft' }} />
-                  <Bar dataKey="Completions" fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40} />
+                  <ReferenceLine y={stats.weeklyAvg} stroke="#10B981" strokeDasharray="3 3" label={{ value: 'Avg', fill: '#10B981', fontSize: 10, position: 'insideTopLeft' }} />
+                  <Bar dataKey="Completions" fill="#8B5CF6" stroke="#1E293B" strokeWidth={2} radius={[8, 8, 0, 0]} barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
