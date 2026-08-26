@@ -2,6 +2,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const DEFAULT_JWT_EXPIRY_SECONDS = 7 * 24 * 60 * 60;
+
+const getJwtExpiry = () => {
+  const configuredExpiry = process.env.JWT_EXPIRES_IN?.trim();
+
+  if (!configuredExpiry) return DEFAULT_JWT_EXPIRY_SECONDS;
+
+  // Digit-only strings are interpreted as milliseconds by jsonwebtoken.
+  // Convert them so values such as "3600" correctly mean seconds.
+  if (/^\d+$/.test(configuredExpiry)) return Number(configuredExpiry);
+
+  return configuredExpiry;
+};
+
 const signToken = (user) => {
   return jwt.sign(
     {
@@ -11,7 +25,7 @@ const signToken = (user) => {
       name: user.name
     },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: getJwtExpiry() }
   );
 };
 

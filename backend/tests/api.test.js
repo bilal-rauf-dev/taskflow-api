@@ -75,6 +75,23 @@ afterAll(async () => {
 });
 
 describe('authentication', () => {
+  test('uses a safe token expiry when JWT_EXPIRES_IN is not configured', async () => {
+    const configuredExpiry = process.env.JWT_EXPIRES_IN;
+    delete process.env.JWT_EXPIRES_IN;
+
+    try {
+      const registration = await request(app)
+        .post('/api/v1/auth/register')
+        .send({ name: 'Grace Hopper', email: 'grace@example.com', password: 'password123' })
+        .expect(201);
+
+      const payload = jwt.verify(registration.body.data.token, process.env.JWT_SECRET);
+      expect(payload.exp - payload.iat).toBe(7 * 24 * 60 * 60);
+    } finally {
+      process.env.JWT_EXPIRES_IN = configuredExpiry;
+    }
+  });
+
   test('registers, logs in, and accepts the issued JWT', async () => {
     const registration = await request(app)
       .post('/api/v1/auth/register')
