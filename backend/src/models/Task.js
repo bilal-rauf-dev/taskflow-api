@@ -31,6 +31,22 @@ const taskSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
+    board: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Board',
+      default: null,
+      index: true
+    },
+    column: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Column',
+      default: null,
+      index: true
+    },
+    position: {
+      type: Number,
+      default: 0
+    },
     assignees: [
       {
         type: mongoose.Schema.Types.ObjectId,
