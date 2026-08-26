@@ -72,7 +72,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
         leave="transition-opacity duration-200"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="fixed inset-0 bg-foreground/25"
+        className="fixed inset-0 bg-foreground/45 backdrop-blur-[2px]"
       />
 
       <div className="fixed inset-0 flex justify-end">
@@ -84,20 +84,20 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
           leave="transform transition duration-200 ease-in"
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
-          className="flex h-full w-full max-w-full flex-col border-l border-border bg-surface shadow-lg sm:max-w-xl"
+          className="flex h-full w-full max-w-full flex-col border-l-2 border-foreground bg-surface shadow-[-8px_0_0_#FBBF24] sm:max-w-xl"
         >
-          <div className="flex items-center justify-between border-b border-border bg-accent-muted px-5 py-4 text-foreground sm:px-6">
+          <div className="flex items-center justify-between border-b-2 border-foreground bg-accent px-5 py-4 text-white sm:px-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Task Editor</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Task Editor</p>
               <Dialog.Title className="qp-heading mt-1 text-3xl">{initialTask ? 'Edit Task' : 'New Task'}</Dialog.Title>
             </div>
-            <button type="button" onClick={onClose} className="rounded-sm border border-border-strong bg-surface p-2 text-foreground-muted transition hover:text-foreground">
-              <XMarkIcon className="h-5 w-5" strokeWidth={1.5} />
+            <button type="button" onClick={onClose} className="rounded-full border-2 border-foreground bg-tertiary p-2 text-foreground shadow-xs transition hover:-translate-y-0.5">
+              <XMarkIcon className="h-5 w-5" strokeWidth={2.5} />
             </button>
           </div>
 
           {initialTask && (
-            <div className="flex border-b border-border bg-background px-5 sm:px-6">
+            <div className="flex border-b-2 border-foreground bg-background px-5 sm:px-6">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
@@ -138,7 +138,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
             {activeTab === 'details' ? (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-foreground-muted">Title</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Title</span>
                   <div className="relative">
                     <PencilSquareIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
                     <input
@@ -153,7 +153,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-foreground-muted">Description</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Description</span>
                   <textarea
                     name="description"
                     rows="4"
@@ -164,14 +164,14 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </label>
 
                 <div>
-                  <span className="mb-2 block text-sm font-medium text-foreground-muted">Priority</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Priority</span>
                   <div className="grid grid-cols-3 gap-3">
                     {priorityOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, priority: option.value }))}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition ${
+                        className={`flex items-center justify-center gap-2 rounded-full border-2 border-foreground px-3 py-3 text-sm font-bold transition ${
                           form.priority === option.value
                             ? `${option.active} shadow-sm`
                             : 'border-border bg-surface text-foreground-muted hover:border-border-strong hover:text-foreground'
@@ -185,14 +185,14 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </div>
 
                 <div>
-                  <span className="mb-2 block text-sm font-medium text-foreground-muted">Status</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Status</span>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {statusOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, status: option.value }))}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition ${
+                        className={`flex items-center justify-center gap-2 rounded-full border-2 border-foreground px-3 py-3 text-sm font-bold transition ${
                           form.status === option.value
                             ? `${option.active} shadow-sm`
                             : 'border-border bg-surface text-foreground-muted hover:border-border-strong hover:text-foreground'
@@ -206,7 +206,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
                 </div>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-foreground-muted">Due Date</span>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Due Date</span>
                   <div className="relative">
                     <CalendarDaysIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
                     <input
@@ -226,7 +226,7 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask }) {
             )}
           </div>
 
-          <div className="border-t border-border bg-background px-5 py-4 sm:px-6">
+          <div className="border-t-2 border-foreground bg-tertiary/20 px-5 py-4 sm:px-6">
             <div className="flex gap-3">
               <button
                 type="button"

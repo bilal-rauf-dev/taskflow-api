@@ -79,7 +79,9 @@ export default function Timer() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="qp-card space-y-6 p-6 text-center shadow-md sm:p-8">
+      <div className="qp-card relative space-y-6 overflow-hidden p-6 text-center shadow-[8px_8px_0_#F472B6] sm:p-8">
+        <span className="shape shape-square -right-5 -top-5 h-16 w-16 bg-tertiary" aria-hidden="true" />
+        <span className="shape shape-circle -bottom-8 -left-8 h-24 w-24 bg-quaternary" aria-hidden="true" />
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Productivity Booster</span>
           <h1 className="qp-heading mt-1 text-4xl text-foreground">Focus Pomodoro</h1>
@@ -104,12 +106,12 @@ export default function Timer() {
         </div>
 
         {/* Tab Controls for Mode Selection */}
-        <div className="flex gap-2 rounded-sm border border-border bg-background p-1">
+        <div className="flex gap-2 rounded-full border-2 border-foreground bg-background p-1.5">
           <button
             type="button"
             onClick={() => switchMode('focus')}
-            className={`flex-1 rounded-sm py-2 text-xs font-medium transition ${
-              mode === 'focus' ? 'bg-accent text-white shadow-xs' : 'text-foreground-muted hover:text-foreground'
+            className={`flex-1 rounded-full py-2 text-xs font-bold transition ${
+              mode === 'focus' ? 'bg-accent text-white shadow-xs' : 'text-foreground-muted hover:bg-tertiary hover:text-foreground'
             }`}
           >
             Work Session (25m)
@@ -117,8 +119,8 @@ export default function Timer() {
           <button
             type="button"
             onClick={() => switchMode('break')}
-            className={`flex-1 rounded-sm py-2 text-xs font-medium transition ${
-              mode === 'break' ? 'bg-accent text-white shadow-xs' : 'text-foreground-muted hover:text-foreground'
+            className={`flex-1 rounded-full py-2 text-xs font-bold transition ${
+              mode === 'break' ? 'bg-quaternary text-foreground shadow-xs' : 'text-foreground-muted hover:bg-tertiary hover:text-foreground'
             }`}
           >
             Short Break (5m)
@@ -127,7 +129,7 @@ export default function Timer() {
 
         {/* Main Countdown Display */}
         <div className="relative flex justify-center py-8">
-          <div className="rounded-full border border-border bg-accent-muted px-8 py-10 font-heading text-7xl tracking-tighter text-foreground tabular-nums select-none sm:text-8xl">
+          <div className="select-none rounded-full border-[3px] border-foreground bg-accent-muted px-8 py-10 font-heading text-7xl font-extrabold tracking-tighter text-foreground shadow-[6px_6px_0_#FBBF24] tabular-nums sm:text-8xl">
             {minutes}:{seconds.toString().padStart(2, '0')}
           </div>
         </div>
@@ -146,8 +148,8 @@ export default function Timer() {
           <button
             type="button"
             onClick={toggleTimer}
-            className={`inline-flex h-14 items-center justify-center gap-2 rounded-sm px-8 font-medium text-white shadow-xs transition ${
-              isRunning ? 'bg-foreground hover:bg-[#2b303c]' : 'bg-accent hover:bg-[#2442db]'
+            className={`inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-foreground px-8 font-heading font-bold shadow-pop transition ${
+              isRunning ? 'bg-secondary text-white hover:-translate-y-1' : 'bg-accent text-white hover:-translate-y-1'
             }`}
           >
             {isRunning ? (

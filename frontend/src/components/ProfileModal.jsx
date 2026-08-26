@@ -17,7 +17,7 @@ function ProfileModal({ isOpen, onClose, user }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-foreground/25" aria-hidden="true" />
+          <div className="fixed inset-0 bg-foreground/45 backdrop-blur-[2px]" aria-hidden="true" />
         </Transition.Child>
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -30,7 +30,7 @@ function ProfileModal({ isOpen, onClose, user }) {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-2"
           >
-            <Dialog.Panel className="w-full max-w-md rounded-lg border border-border bg-surface p-6 shadow-lg">
+            <Dialog.Panel className="w-full max-w-md rounded-lg border-2 border-foreground bg-surface p-6 shadow-[8px_8px_0_#FBBF24]">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Profile</p>

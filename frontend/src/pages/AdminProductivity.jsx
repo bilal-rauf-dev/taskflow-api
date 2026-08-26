@@ -38,10 +38,11 @@ export default function AdminProductivity() {
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-lg border border-border bg-surface p-6 shadow-md sm:p-8">
+        <section className="relative overflow-hidden rounded-lg border-2 border-foreground bg-quaternary p-6 shadow-[7px_7px_0_#1E293B] sm:p-8">
+          <span className="shape shape-square -right-4 -top-8 h-24 w-24 bg-secondary" aria-hidden="true" />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Admin Command Center</p>
-            <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Productivity Velocity</h1>
+            <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Momentum, by the numbers.</h1>
             <p className="mt-2 text-sm text-foreground-muted sm:text-base">
               Monitor team performance, task completions, and workflow velocity curves over calendar weeks.
             </p>
@@ -79,14 +80,15 @@ export default function AdminProductivity() {
                   <Tooltip
                     contentStyle={{
                       background: '#FFFFFF',
-                      borderRadius: '8px',
-                      color: '#14171F',
-                      border: '1px solid #E7E6E2',
+                      borderRadius: '16px',
+                      color: '#1E293B',
+                      border: '2px solid #1E293B',
+                      boxShadow: '4px 4px 0 #F472B6',
                       fontSize: '12px'
                     }}
                   />
-                  <ReferenceLine y={stats.weeklyAvg} stroke="#1F9D6E" strokeDasharray="3 3" label={{ value: 'Avg', fill: '#1F9D6E', fontSize: 10, position: 'insideTopLeft' }} />
-                  <Bar dataKey="Completions" fill="#2B4EFF" radius={[6, 6, 0, 0]} barSize={40} />
+                  <ReferenceLine y={stats.weeklyAvg} stroke="#10B981" strokeDasharray="3 3" label={{ value: 'Avg', fill: '#10B981', fontSize: 10, position: 'insideTopLeft' }} />
+                  <Bar dataKey="Completions" fill="#8B5CF6" stroke="#1E293B" strokeWidth={2} radius={[8, 8, 0, 0]} barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -220,28 +220,32 @@ function Dashboard() {
       value: stats.total,
       Icon: Bars3BottomLeftIcon,
       iconClass: 'bg-accent text-white',
-      textClass: 'text-foreground'
+      textClass: 'text-foreground',
+      cardClass: 'shadow-[6px_6px_0_#F3E8FF]'
     },
     {
       title: 'Completed',
       value: stats.completed,
       Icon: CheckCircleIcon,
       iconClass: 'bg-success text-white',
-      textClass: 'text-success'
+      textClass: 'text-success',
+      cardClass: 'shadow-[6px_6px_0_#D1FAE5]'
     },
     {
       title: 'In Progress',
       value: stats.inProgress,
       Icon: ClockIcon,
       iconClass: 'bg-warning text-white',
-      textClass: 'text-warning'
+      textClass: 'text-warning',
+      cardClass: 'shadow-[6px_6px_0_#FEF3C7]'
     },
     {
       title: 'Pending',
       value: stats.pending,
       Icon: ExclamationTriangleIcon,
       iconClass: 'bg-danger text-white',
-      textClass: 'text-danger'
+      textClass: 'text-danger',
+      cardClass: 'shadow-[6px_6px_0_#FCE7F3]'
     }
   ];
 
@@ -254,26 +258,28 @@ function Dashboard() {
   return (
     <div className="dashboard-shell min-h-screen">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-lg border border-border bg-surface p-6 shadow-md sm:p-8">
+        <section className="relative overflow-hidden rounded-lg border-2 border-foreground bg-accent p-6 text-white shadow-[7px_7px_0_#FBBF24] sm:p-8">
+          <span className="shape shape-circle -right-8 -top-12 h-36 w-36 bg-secondary" aria-hidden="true" />
+          <span className="shape shape-square -bottom-8 right-52 hidden h-20 w-20 bg-quaternary sm:block" aria-hidden="true" />
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Workspace overview</p>
-              <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Welcome back, {user?.name}!</h1>
-              <p className="mt-2 max-w-2xl text-sm text-foreground-muted sm:text-base">
-                {currentDate} · Manage your task flow with clarity, speed, and a premium dashboard experience.
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/75">Workspace overview</p>
+              <h1 className="qp-heading mt-2 text-4xl tracking-tight text-white sm:text-5xl">Hey {user?.name}, let&apos;s make progress!</h1>
+              <p className="mt-2 max-w-2xl text-sm font-medium text-white/75 sm:text-base">
+                {currentDate} · Your tasks are lined up and ready to move.
               </p>
             </div>
-            <div className="rounded-sm bg-accent-muted px-4 py-3 text-sm font-medium text-accent">
+            <div className="relative rounded-full border-2 border-foreground bg-tertiary px-4 py-3 text-sm font-bold text-foreground shadow-xs">
               {isAdmin ? 'Admin access enabled' : 'User workspace'}
             </div>
           </div>
         </section>
 
         <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {statCards.map(({ title, value, Icon, iconClass, textClass }) => (
-            <article key={title} className="qp-card qp-card-interactive group p-5">
-              <div className={`inline-flex rounded-sm ${iconClass} p-3 shadow-xs`}>
-                <Icon className="h-5 w-5" strokeWidth={1.5} />
+          {statCards.map(({ title, value, Icon, iconClass, textClass, cardClass }, index) => (
+            <article key={title} className={`qp-card qp-card-interactive group p-5 ${cardClass} ${index % 2 ? 'sm:translate-y-2' : ''}`}>
+              <div className={`inline-flex rounded-full border-2 border-foreground ${iconClass} p-3 shadow-xs`}>
+                <Icon className="h-5 w-5" strokeWidth={2.5} />
               </div>
               <p className="mt-4 text-sm font-medium text-foreground-muted">{title}</p>
               <p className={`mt-1 font-heading text-4xl ${textClass}`}>{value}</p>
@@ -281,7 +287,7 @@ function Dashboard() {
           ))}
         </section>
 
-        <section className="qp-card mt-6 p-4 shadow-sm sm:p-6">
+        <section className="qp-card mt-8 p-4 shadow-[6px_6px_0_#F3E8FF] sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row items-center">
             <div className="relative flex-1 w-full">
               <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" strokeWidth={1.5} />
@@ -307,10 +313,10 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setSmartSuggest(prev => !prev)}
-              className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-sm border px-5 py-3 text-sm font-medium transition whitespace-nowrap ${
+              className={`inline-flex min-h-12 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-2 border-foreground px-5 py-3 text-sm font-bold shadow-xs transition sm:w-auto ${
                 smartSuggest
-                  ? 'border-accent bg-accent-muted text-accent shadow-focus'
-                  : 'border-border-strong bg-surface text-foreground-muted hover:border-foreground hover:text-foreground'
+                  ? 'bg-tertiary text-foreground'
+                  : 'bg-surface text-foreground-muted hover:bg-accent-muted hover:text-foreground'
               }`}
             >
               <span>✨ Smart Suggest</span>
@@ -327,8 +333,8 @@ function Dashboard() {
                 onClick={() => setFilter(item)}
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                   filter === item
-                    ? 'bg-accent text-white shadow-xs'
-                    : 'border border-border-strong bg-surface text-foreground-muted hover:border-foreground hover:text-foreground'
+                    ? 'border-2 border-foreground bg-accent text-white shadow-xs'
+                    : 'border-2 border-foreground bg-surface text-foreground-muted hover:bg-tertiary hover:text-foreground'
                 }`}
               >
                 <span>{item === 'all' ? 'All' : item.replace('-', ' ')}</span>
@@ -339,13 +345,13 @@ function Dashboard() {
             ))}
           </div>
 
-          <div className="flex items-center gap-1 rounded-sm border border-border-strong bg-surface p-1">
+          <div className="flex items-center gap-1 rounded-full border-2 border-foreground bg-surface p-1 shadow-xs">
             <button
               type="button"
               onClick={() => setViewMode('board')}
               className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'board'
-                  ? 'bg-accent text-white shadow-xs'
+                  ? 'bg-accent text-white'
                   : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
               }`}
             >
@@ -357,7 +363,7 @@ function Dashboard() {
               onClick={() => setViewMode('list')}
               className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'list'
-                  ? 'bg-accent text-white shadow-xs'
+                  ? 'bg-accent text-white'
                   : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
               }`}
             >
@@ -407,7 +413,7 @@ function Dashboard() {
                     key={statusKey}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, statusKey)}
-                    className={`flex flex-col rounded-md border border-border p-4 border-t-4 ${col.border} ${col.bg} min-h-[450px]`}
+                    className={`flex min-h-[450px] flex-col rounded-lg border-2 border-foreground border-t-[10px] p-4 shadow-[5px_5px_0_#E2E8F0] ${col.border} ${col.bg}`}
                   >
                     <h3 className="mb-4 flex items-center justify-between font-semibold text-foreground">
                       <span>{col.title}</span>
@@ -440,7 +446,7 @@ function Dashboard() {
                         ))}
                       </AnimatePresence>
                       {columnTasks.length === 0 && (
-                        <div className="flex h-24 items-center justify-center rounded-sm border border-dashed border-border-strong text-xs text-foreground-muted">
+                          <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-border-strong bg-white/60 text-xs font-semibold text-foreground-muted">
                           Drop tasks here
                         </div>
                       )}
@@ -472,10 +478,10 @@ function Dashboard() {
         <button
           type="button"
           onClick={openCreate}
-          className="animate-pulse-soft sticky bottom-6 left-full z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-sm transition hover:bg-[#2442db]"
+          className="animate-pulse-soft sticky bottom-6 left-full z-50 inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-foreground bg-accent text-white shadow-pop transition hover:bg-secondary"
           aria-label="Create task"
         >
-          <PlusIcon className="h-6 w-6" strokeWidth={1.5} />
+          <PlusIcon className="h-6 w-6" strokeWidth={2.5} />
         </button>
       </main>
 

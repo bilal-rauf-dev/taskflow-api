@@ -4,34 +4,41 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#FAFAF8',
+        background: '#FFFDF5',
         surface: '#FFFFFF',
-        foreground: '#14171F',
-        'foreground-muted': '#5B6270',
-        border: '#E7E6E2',
-        'border-strong': '#D8D7D2',
-        accent: '#2B4EFF',
-        'accent-muted': '#EEF1FF',
-        success: '#1F9D6E',
-        warning: '#B9832A',
-        danger: '#C4433A'
+        foreground: '#1E293B',
+        'foreground-muted': '#64748B',
+        muted: '#F1F5F9',
+        border: '#E2E8F0',
+        'border-strong': '#CBD5E1',
+        accent: '#8B5CF6',
+        'accent-muted': '#F3E8FF',
+        secondary: '#F472B6',
+        tertiary: '#FBBF24',
+        quaternary: '#34D399',
+        success: '#10B981',
+        warning: '#F59E0B',
+        danger: '#F43F5E'
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        heading: ['Fraunces', 'Georgia', 'serif']
+        sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif']
       },
       borderRadius: {
-        xs: '4px',
+        xs: '8px',
         sm: '8px',
-        md: '12px',
-        lg: '20px'
+        md: '16px',
+        lg: '24px'
       },
       boxShadow: {
-        xs: '0 1px 2px rgba(20, 23, 31, 0.04)',
-        sm: '0 2px 8px rgba(20, 23, 31, 0.06), 0 1px 2px rgba(20, 23, 31, 0.04)',
-        md: '0 8px 24px rgba(20, 23, 31, 0.08), 0 2px 6px rgba(20, 23, 31, 0.04)',
-        lg: '0 24px 48px rgba(20, 23, 31, 0.12), 0 8px 16px rgba(20, 23, 31, 0.06)',
-        focus: '0 0 0 3px rgba(43, 78, 255, 0.16)'
+        xs: '2px 2px 0 #1E293B',
+        sm: '4px 4px 0 #1E293B',
+        md: '6px 6px 0 #E2E8F0',
+        lg: '8px 8px 0 #F472B6',
+        focus: '4px 4px 0 #8B5CF6',
+        pop: '4px 4px 0 #1E293B',
+        'pop-hover': '6px 6px 0 #1E293B',
+        pink: '8px 8px 0 #F472B6'
       }
     }
   },

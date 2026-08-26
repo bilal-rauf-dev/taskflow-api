@@ -32,6 +32,8 @@ function NotificationInbox() {
     try {
       const response = await api.get('/notifications');
       setNotifications(response.data.data.notifications || []);
+    } catch {
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -85,10 +87,10 @@ function NotificationInbox() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="relative rounded-sm p-2 text-foreground-muted transition hover:bg-accent-muted hover:text-accent"
+        className="relative rounded-full border-2 border-transparent p-2 text-foreground-muted transition hover:border-foreground hover:bg-accent-muted hover:text-accent"
         aria-label={`Notifications${unreadCount ? ` (${unreadCount} unread)` : ''}`}
       >
-        <BellIcon className="h-5 w-5" strokeWidth={1.5} />
+        <BellIcon className="h-5 w-5" strokeWidth={2.5} />
         {unreadCount > 0 && (
           <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-semibold text-white">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -107,7 +109,7 @@ function NotificationInbox() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-foreground/25" aria-hidden="true" />
+            <div className="fixed inset-0 bg-foreground/45 backdrop-blur-[2px]" aria-hidden="true" />
           </Transition.Child>
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -120,7 +122,7 @@ function NotificationInbox() {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-2"
             >
-              <Dialog.Panel className="w-full max-w-lg rounded-lg border border-border bg-surface p-6 shadow-lg">
+              <Dialog.Panel className="w-full max-w-lg rounded-lg border-2 border-foreground bg-surface p-6 shadow-[8px_8px_0_#F472B6]">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Inbox</p>
@@ -129,10 +131,10 @@ function NotificationInbox() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="rounded-sm p-2 text-foreground-muted transition hover:bg-background hover:text-foreground"
+                    className="rounded-full border-2 border-transparent p-2 text-foreground-muted transition hover:border-foreground hover:bg-tertiary hover:text-foreground"
                     aria-label="Close notifications"
                   >
-                    <XMarkIcon className="h-5 w-5" strokeWidth={1.5} />
+                    <XMarkIcon className="h-5 w-5" strokeWidth={2.5} />
                   </button>
                 </div>
 
@@ -153,15 +155,15 @@ function NotificationInbox() {
                       {[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse rounded-md bg-background" />)}
                     </div>
                   ) : notifications.length === 0 ? (
-                    <div className="rounded-md border border-dashed border-border-strong bg-background px-4 py-10 text-center text-sm text-foreground-muted">
+                    <div className="rounded-md border-2 border-dashed border-border-strong bg-background px-4 py-10 text-center text-sm text-foreground-muted">
                       No notifications yet.
                     </div>
                   ) : (
                     notifications.map((notification) => (
                       <article
                         key={notification._id}
-                        className={`rounded-md border p-4 transition ${
-                          notification.read ? 'border-border bg-surface' : 'border-accent/30 bg-accent-muted/45'
+                        className={`rounded-md border-2 p-4 transition ${
+                          notification.read ? 'border-border-strong bg-surface' : 'border-accent bg-accent-muted/45'
                         }`}
                       >
                         <div className="flex gap-3">
@@ -179,7 +181,7 @@ function NotificationInbox() {
                               className="rounded-sm p-1.5 text-accent transition hover:bg-surface"
                               aria-label="Mark notification as read"
                             >
-                              <CheckIcon className="h-4 w-4" strokeWidth={1.5} />
+                              <CheckIcon className="h-4 w-4" strokeWidth={2.5} />
                             </button>
                           )}
                         </div>

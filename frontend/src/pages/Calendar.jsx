@@ -57,12 +57,13 @@ export default function TaskCalendar() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 h-[calc(100vh-40px)] flex flex-col">
-      <div className="mb-6">
+      <div className="relative mb-8 overflow-hidden rounded-lg border-2 border-foreground bg-tertiary p-6 shadow-[6px_6px_0_#1E293B]">
+        <span className="shape shape-circle -right-5 -top-8 h-24 w-24 bg-secondary" aria-hidden="true" />
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Time Management</span>
-        <h1 className="qp-heading mt-1 text-4xl text-foreground">Calendar Workspace</h1>
+        <h1 className="qp-heading mt-1 text-4xl text-foreground">Your time, mapped out.</h1>
       </div>
 
-      <div className="qp-card flex flex-1 flex-col overflow-hidden p-5 shadow-sm">
+      <div className="qp-card flex flex-1 flex-col overflow-hidden p-5 shadow-[7px_7px_0_#F3E8FF]">
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <span className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
@@ -87,7 +88,7 @@ export default function TaskCalendar() {
                 }[priority] || 'bg-foreground text-white border-foreground';
                 
                 return {
-                  className: `${colors} font-medium text-xs rounded-sm px-2 shadow-xs border`
+                  className: `${colors} rounded-sm border-2 border-foreground px-2 text-xs font-bold shadow-xs`
                 };
               }}
             />

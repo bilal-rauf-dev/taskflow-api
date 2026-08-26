@@ -8,7 +8,6 @@ import api from '../api/axios';
 function AdminPanel() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const fetchAllTasks = async () => {
     try {
@@ -69,24 +68,25 @@ function AdminPanel() {
   return (
     <div className="dashboard-shell min-h-screen">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-lg border border-border bg-surface p-6 shadow-md sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Admin workspace</p>
-          <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">Admin Panel</h1>
-          <p className="mt-2 text-sm text-foreground-muted sm:text-base">Manage all tasks across users.</p>
+        <section className="relative overflow-hidden rounded-lg border-2 border-foreground bg-secondary p-6 shadow-[7px_7px_0_#1E293B] sm:p-8">
+          <span className="shape shape-circle -right-8 -top-12 h-36 w-36 bg-tertiary" aria-hidden="true" />
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-foreground/70">Admin workspace</p>
+          <h1 className="qp-heading mt-2 text-4xl tracking-tight text-foreground sm:text-5xl">The big-picture board.</h1>
+          <p className="mt-2 text-sm font-medium text-foreground/70 sm:text-base">Manage all tasks across users.</p>
         </section>
 
         <section className="mt-6 grid gap-4 sm:grid-cols-3">
-          <article className="qp-card p-5 shadow-xs">
+          <article className="qp-card p-5 shadow-[6px_6px_0_#F3E8FF]">
             <p className="text-sm font-medium text-foreground-muted">Total Tasks</p>
             <p className="qp-heading mt-2 text-4xl text-foreground">{tasks.length}</p>
           </article>
-          <article className="qp-card p-5 shadow-xs">
+          <article className="qp-card p-5 shadow-[6px_6px_0_#FCE7F3]">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground-muted">
-              <UsersIcon className="h-4 w-4 text-accent" strokeWidth={1.5} /> Total Users
+              <UsersIcon className="h-4 w-4 text-accent" strokeWidth={2.5} /> Total Users
             </div>
             <p className="qp-heading mt-2 text-4xl text-foreground">{uniqueUsers}</p>
           </article>
-          <article className="qp-card p-5 shadow-xs">
+          <article className="qp-card p-5 shadow-[6px_6px_0_#D1FAE5]">
             <p className="text-sm font-medium text-foreground-muted">Completed Rate</p>
             <p className="qp-heading mt-2 text-4xl text-success">{completedRate}%</p>
           </article>
@@ -94,8 +94,8 @@ function AdminPanel() {
 
         <section className="qp-card mt-6 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="min-w-[1024px] w-full text-left text-sm">
-              <thead className="bg-background text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+            <table className="w-full min-w-[1024px] text-left text-sm">
+              <thead className="border-b-2 border-foreground bg-tertiary/35 text-xs font-bold uppercase tracking-wide text-foreground">
                 <tr>
                   <th className="px-5 py-4">Title</th>
                   <th className="px-5 py-4">Owner</th>
@@ -137,7 +137,7 @@ function AdminPanel() {
                         </div>
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusBadge[task.status]}`}>
+                        <span className={`inline-flex rounded-full border border-foreground px-3 py-1 text-xs font-semibold ${statusBadge[task.status]}`}>
                           {task.status}
                         </span>
                       </td>
@@ -158,10 +158,10 @@ function AdminPanel() {
                         <button
                           type="button"
                           onClick={() => deleteTask(task._id)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-danger transition hover:bg-red-50"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent text-danger transition hover:border-foreground hover:bg-secondary hover:text-white"
                           aria-label="Delete task"
                         >
-                          <TrashIcon className="h-5 w-5" strokeWidth={1.5} />
+                          <TrashIcon className="h-5 w-5" strokeWidth={2.5} />
                         </button>
                       </td>
                     </tr>

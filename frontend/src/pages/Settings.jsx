@@ -50,15 +50,16 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      <div>
+      <div className="relative overflow-hidden rounded-lg border-2 border-foreground bg-tertiary p-6 shadow-[6px_6px_0_#1E293B]">
+        <span className="shape shape-circle -right-5 -top-8 h-24 w-24 bg-secondary" aria-hidden="true" />
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Configuration</span>
-        <h1 className="qp-heading mt-1 text-4xl text-foreground">Preferences & settings</h1>
+        <h1 className="qp-heading mt-1 text-4xl text-foreground">Make TaskFlow yours.</h1>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left column - profile overview */}
         <div className="qp-card md:col-span-1 flex flex-col items-center space-y-4 p-6 text-center shadow-sm">
-          <div className="grid h-20 w-20 place-items-center rounded-full bg-accent font-heading text-3xl text-white shadow-xs">
+          <div className="grid h-20 w-20 place-items-center rounded-full border-2 border-foreground bg-accent font-heading text-3xl font-extrabold text-white shadow-pop">
             {user?.name ? user.name[0].toUpperCase() : 'U'}
           </div>
           <div>
