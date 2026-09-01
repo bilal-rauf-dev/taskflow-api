@@ -5,6 +5,8 @@ import { UserIcon, EnvelopeIcon, LockClosedIcon, XCircleIcon } from '@heroicons/
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import BackendStatusBanner from '../components/BackendStatusBanner';
+import GuestModeCallout from '../components/GuestModeCallout';
 
 function Register() {
   const [form, setForm] = useState({
@@ -138,6 +140,8 @@ function Register() {
                 <h2 className="qp-heading mt-2 text-4xl text-foreground">Get started free</h2>
               </div>
 
+              <BackendStatusBanner />
+
               {errors.form && (
                 <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                   <XCircleIcon className="mt-0.5 h-5 w-5 flex-none" />
@@ -262,6 +266,10 @@ function Register() {
                   Login
                 </Link>
               </p>
+
+              <div className="mt-4 flex justify-center">
+                <GuestModeCallout className="qp-button-secondary gap-2 px-5 py-2.5 text-xs" />
+              </div>
             </div>
           </div>
         </section>

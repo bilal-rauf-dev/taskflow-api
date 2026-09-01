@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GUEST_TOKEN, isGuestToken, createGuestUser } from '../api/guestSession';
 
 const AuthContext = createContext(null);
 
@@ -45,6 +46,15 @@ export function AuthProvider({ children }) {
     saveSession(authToken, authUser, remember);
   };
 
+  // Guest Mode: a local-only session with no real backend involved. It reuses
+  // the same token/user storage as a real login (with a sentinel token - see
+  // api/guestSession.js) so isAuthenticated, ProtectedRoute, and every other
+  // consumer of this context keep working unchanged. Task/board data itself
+  // lives separately, in api/guestStore.js.
+  const enterGuestMode = () => {
+    saveSession(GUEST_TOKEN, createGuestUser(), true);
+  };
+
   const updateSession = (authToken, authUser) => {
     saveSession(authToken, authUser, localStorage.getItem('token') !== null);
   };
@@ -62,8 +72,11 @@ export function AuthProvider({ children }) {
       login,
       updateSession,
       logout,
+      enterGuestMode,
+      exitGuestMode: logout,
       isAuthenticated: Boolean(token),
-      isAdmin: user?.role === 'admin'
+      isAdmin: user?.role === 'admin',
+      isGuest: isGuestToken(token)
     }),
     [user, token]
   );

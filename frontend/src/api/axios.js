@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
+import { guestAdapter } from './guestAdapter';
+import { isGuestToken } from './guestSession';
 
 const api = axios.create({
   baseURL: API_BASE_URL
@@ -13,6 +15,14 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Guest Mode never touches the network: every request is instead served
+    // out of localStorage by guestAdapter, which returns the same response
+    // shape the real backend would. See AuthContext#enterGuestMode.
+    if (isGuestToken(token)) {
+      config.adapter = guestAdapter;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

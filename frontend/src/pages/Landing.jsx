@@ -8,6 +8,7 @@ import {
   ShieldCheckIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline';
+import GuestModeCallout from '../components/GuestModeCallout';
 
 const features = [
   {
@@ -48,6 +49,7 @@ function Landing() {
             <span className="font-heading text-2xl font-extrabold tracking-tight">TaskFlow</span>
           </Link>
           <nav className="flex items-center gap-2 sm:gap-3" aria-label="Account navigation">
+            <GuestModeCallout className="min-h-11 px-3 text-sm font-semibold text-foreground-muted transition hover:text-accent" />
             <Link to="/login" className="qp-button-secondary min-h-11 px-4 text-sm sm:px-5">Sign in</Link>
             <Link to="/register" className="qp-button min-h-11 px-4 text-sm sm:px-5">Start free</Link>
           </nav>
@@ -76,7 +78,7 @@ function Landing() {
               <Link to="/login" className="qp-button-secondary px-7 py-3.5">I have an account</Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-foreground-muted">
-              {['No credit card', 'Fast setup', 'Real-time updates'].map((item) => (
+              {['No credit card', 'Fast setup', 'Real-time updates', 'Try before you sign up'].map((item) => (
                 <span key={item} className="flex items-center gap-2">
                   <span className="grid h-5 w-5 place-items-center rounded-full border border-foreground bg-quaternary text-foreground">
                     <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
