@@ -15,7 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import NotificationInbox from './NotificationInbox';
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, isGuest, logout } = useAuth();
 
   const handleLinkClick = () => {
     if (setMobileOpen) {
@@ -122,8 +122,17 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       <div className="flex-shrink-0 border-t-2 border-foreground bg-tertiary/25 p-4">
         <div className="flex items-center gap-3 justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-foreground truncate">{user?.name}</p>
-            <p className="text-[10px] text-foreground-muted truncate">{user?.email}</p>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground truncate">
+              {user?.name}
+              {isGuest && (
+                <span className="flex-shrink-0 rounded-full border border-foreground bg-tertiary px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-foreground">
+                  Guest
+                </span>
+              )}
+            </p>
+            <p className="text-[10px] text-foreground-muted truncate">
+              {isGuest ? 'Saved on this device only' : user?.email}
+            </p>
           </div>
           <div className="flex items-center gap-1">
             <NotificationInbox />

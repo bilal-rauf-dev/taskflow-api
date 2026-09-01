@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Cog6ToothIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, PaintBrushIcon, SparklesIcon, TrashIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import api from '../api/axios';
+import { resetGuestData } from '../api/guestStore';
 
 export default function Settings() {
-  const { user, updateSession } = useAuth();
+  const { user, updateSession, isGuest } = useAuth();
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState({
     theme: 'warm',
     soundAlerts: true,
@@ -32,6 +35,17 @@ export default function Settings() {
     toast.success('Preference updated successfully');
   };
 
+  const handleClearGuestData = () => {
+    const confirmed = window.confirm(
+      'This deletes every board and task saved in Guest Mode on this device. This cannot be undone. Continue?'
+    );
+    if (!confirmed) return;
+
+    resetGuestData();
+    toast.success('Local guest data cleared');
+    window.location.reload();
+  };
+
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSavingProfile(true);
@@ -55,6 +69,37 @@ export default function Settings() {
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Configuration</span>
         <h1 className="qp-heading mt-1 text-4xl text-foreground">Make TaskFlow yours.</h1>
       </div>
+
+      {isGuest && (
+        <div className="qp-card space-y-3 border-2 border-dashed border-accent p-6 shadow-sm">
+          <div className="flex items-center gap-2">
+            <SparklesIcon className="h-5 w-5 text-accent" strokeWidth={2} />
+            <h3 className="font-heading text-2xl text-foreground">You&apos;re in Guest Mode</h3>
+          </div>
+          <p className="text-sm text-foreground-muted">
+            Everything you create is saved only in this browser - nothing is sent to a server.
+            Create a free account to keep this workspace for good and reach it from other devices.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => navigate('/register')}
+              className="qp-button gap-2 px-4 py-2.5 text-xs"
+            >
+              Create an account
+              <ArrowRightIcon className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={handleClearGuestData}
+              className="qp-button-secondary gap-2 px-4 py-2.5 text-xs text-danger"
+            >
+              <TrashIcon className="h-4 w-4" />
+              Clear local data
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left column - profile overview */}

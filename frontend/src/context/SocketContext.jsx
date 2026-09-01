@@ -7,10 +7,12 @@ const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-  const { user, token } = useAuth();
+  const { user, token, isGuest } = useAuth();
 
   useEffect(() => {
-    if (!user || !token) {
+    // Guest Mode has no backend to connect to (and, on a frontend-only
+    // deploy, no backend at all) - never open a socket for it.
+    if (!user || !token || isGuest) {
       if (socket) {
         socket.disconnect();
         setSocket(null);
@@ -34,7 +36,7 @@ export const SocketProvider = ({ children }) => {
     return () => {
       newSocket.disconnect();
     };
-  }, [user, token]);
+  }, [user, token, isGuest]);
 
   return (
     <SocketContext.Provider value={socket}>
