@@ -16,15 +16,32 @@ const swaggerSpec = require('./swagger/swagger');
 
 const app = express();
 
-const limiter = rateLimit({
+// Auth endpoints (login/register) get a tight limiter to blunt credential
+// stuffing / brute-force attempts. Everything else under /api/v1 is normal
+// authenticated read/write traffic (dashboard, boards, notifications, the
+// realtime UI polling on every page nav) and needs a much larger budget so
+// ordinary usage doesn't get mistaken for abuse and blocked with a 429.
+const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
     message: 'Too many requests, please try again later',
-    errors: ['Rate limit exceeded (100 requests per 15 minutes)']
+    errors: ['Rate limit exceeded (30 requests per 15 minutes)']
+  }
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many requests, please try again later',
+    errors: ['Rate limit exceeded (500 requests per 15 minutes)']
   }
 });
 
@@ -36,7 +53,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
 app.use(express.json());
-app.use(limiter);
 
 app.get('/health', (req, res) => {
   return res.status(200).json({
@@ -46,11 +62,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/tasks', taskRoutes);
-app.use('/api/v1/boards', boardRoutes);
-app.use('/api/v1/notifications', notificationRoutes);
-app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/auth', authLimiter, authRoutes);
+app.use('/api/v1/tasks', apiLimiter, taskRoutes);
+app.use('/api/v1/boards', apiLimiter, boardRoutes);
+app.use('/api/v1/notifications', apiLimiter, notificationRoutes);
+app.use('/api/v1/admin', apiLimiter, adminRoutes);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res) => {
