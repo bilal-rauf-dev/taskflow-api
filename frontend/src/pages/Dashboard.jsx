@@ -10,7 +10,8 @@ import {
   ExclamationTriangleIcon,
   Bars3BottomLeftIcon,
   Squares2X2Icon,
-  ListBulletIcon
+  ListBulletIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
@@ -319,7 +320,8 @@ function Dashboard() {
                   : 'bg-surface text-foreground-muted hover:bg-accent-muted hover:text-foreground'
               }`}
             >
-              <span>✨ Smart Suggest</span>
+              <SparklesIcon className="h-4 w-4" strokeWidth={2.5} />
+              <span>Smart Suggest</span>
             </button>
           </div>
         </section>
@@ -349,7 +351,7 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setViewMode('board')}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'board'
                   ? 'bg-accent text-white'
                   : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
@@ -361,7 +363,7 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-medium transition ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'list'
                   ? 'bg-accent text-white'
                   : 'text-foreground-muted hover:bg-accent-muted hover:text-accent'
