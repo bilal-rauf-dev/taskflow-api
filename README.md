@@ -129,6 +129,18 @@ npm run dev
 
 ---
 
+## Deployment
+
+The repository includes a root-level [`vercel.json`](vercel.json) for deploying the React application from this monorepo. It runs the install and build commands from `frontend/`, serves `frontend/dist`, and rewrites application routes to `index.html` so React Router links work when opened directly.
+
+- Leave `VITE_API_URL` unset for a frontend-only deployment. TaskFlow will run in Guest Mode and store data in that browser's local storage.
+- Set `VITE_API_URL` to the backend origin, without `/api/v1`, to enable accounts, shared boards, notifications, and real-time updates.
+- When a backend is configured, set its `CLIENT_URL` to the deployed frontend origin so Socket.IO accepts the browser connection.
+
+The backend and MongoDB are not deployed by this Vercel configuration.
+
+---
+
 ## Scalability Notes
 
 The backend can be placed behind an Nginx reverse proxy or cloud load balancer for horizontal scaling, zero-downtime deployments, and improved throughput.
